@@ -1,8 +1,5 @@
-# DIS (DAS Is Slow)
 
-## Example
-
-![example](images/example.png)
+<a href="http://uaf-8.t2.ucsd.edu/~namin/dis"><img src="images/example.png"></a>
 
 ## Installation
 
