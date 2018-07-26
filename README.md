@@ -1,5 +1,9 @@
 # DIS (DAS Is Slow)
 
+## Example
+
+![example](images/example.png)
+
 ## Installation
 
 * Clone this repository into your `~/public_html/` directory. 
