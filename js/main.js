@@ -68,6 +68,16 @@ function getQueryURL() {
     copyToClipboard(queryURL)
 }
 
+function getQueryCLI() {
+    var data = {};
+    $.each($("#main_form").serializeArray(), function (i, field) { data[field.name] = field.value || ""; });
+    extra = "--detail "
+    if ("short" in data) extra = "";
+    var clicmd = "dis_client.py -t "+data["type"]+" "+extra+"\""+data["query"]+"\"";
+    console.log(clicmd);
+    copyToClipboard(clicmd)
+}
+
 
 $(function(){
 
@@ -94,4 +104,25 @@ $(function(){
         submitQuery()
     }
     
+});
+
+// vimlike incsearch: press / to focus on search box
+$(document).keydown(function(e) {
+    var target = $(event.target);
+    console.log(e.keyCode);
+    if (!target.is("#query") && !target.is("#select_type")) {
+        if(e.keyCode == 191) {
+            // / focus search box
+            e.preventDefault();
+            $("#query").focus().select();
+        }
+        // y to copy url
+        if(e.keyCode== 89) {
+            getQueryURL();
+        }
+        // c to copy cli command
+        if(e.keyCode== 67) {
+            getQueryCLI();
+        }
+    }
 });
