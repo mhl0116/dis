@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>disMaker</title>
+    <link rel="stylesheet" type="text/css" href="css/pretty-json.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="icon" type="image/png" sizes="96x96" href="images/dislogo.png">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="js/main.js" ></script>
+    <script type="text/javascript" src="js/underscore-min.js" ></script>
+    <script type="text/javascript" src="js/backbone-min.js" ></script>
+    <script type="text/javascript" src="js/pretty-json-min.js" ></script>
+
+</head>
+
+<body>
+<center>
+    <h1>🚀💯<span class="highlight">D</span>AS <span class="highlight">I</span>s <span class="highlight">S</span>low</h1>
+    <h5>🏎️ Now ~20-50% faster, and GMO-free!</h5>
+            <!-- <img height="50px" src="images/dislogo.png" /> -->
+</center>
+
+
+<form id="main_form" action="javascript:void(0)">
+<center>
+    <input type="text" class="inputbar" id="query" name="query" placeholder="dataset name/query" style="width:550px;"/>
+    <select id="select_type" class="inputbar selectbar" name="type" style="width:120px;">
+        <option value="basic">basic</option>
+        <option value="files">files</option>
+        <option value="config">config</option>
+        <option value="mcm">mcm</option>
+        <option value="driver">driver</option>
+        <option value="parents">parents</option>
+        <option value="lhe">lhe</option>
+        <option value="snt">snt</option>
+        <option value="dbs">dbs</option>
+        <option value="runs">runs</option>
+        <option value="sites">sites</option>
+        <option value="pick">pick</option>
+        <option value="pick_cms3">pick_cms3</option>
+    </select>
+    <input type="checkbox" id="short" name="short" value="short" checked>short &ensp;
+    <button class="submit_button" value="submit">submit</button>
+    <a  href="#" onClick="getQueryURL();">Copy as URL</a>
+    &nbsp; &nbsp;
+    <a  href="https://github.com/aminnj/makers/tree/master/disMaker" >Examples/usage</a>
+    <br>
+</center>
+</form>
+
+<!-- <div id="query_container"> -->
+    <!-- <center>this is your query</center> -->
+    <!-- <pre> <div class="json" id="query"></div> </pre> -->
+<!-- </div> -->
+<center> <img id="loading_animation" src="images/loading.gif" /> </center>
+<div id="result_container">
+    <!-- <center>this is my response</center> -->
+    <pre> <div class="json" id="result"></div> </pre>
+    <!-- <center> -->
+    <!--     Equivalent CLI command: -->
+    <!--     <pre> <div id="clisyntax"></div> </pre> -->
+    <!-- </center> -->
+    <center> <span class="timing"></span> </center>
+</div>
+
+</body>
+</html>
+

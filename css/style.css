@@ -1,0 +1,95 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,900);
+
+.highlight {
+    color: #06F;
+}
+.json {
+   white-space: pre-wrap;
+    width:90%;
+    border: 1px solid #333;
+    padding: 5px;
+    // border-style: none;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 80%;
+
+}
+
+body {
+    /* padding: 0px; */
+    /* margin: 0px; */
+    font-family: Open Sans;
+}
+
+input[type="checkbox"]{
+    border: 1px solid #000;
+cursor: pointer;
+-webkit-appearance: none;
+appearance: none;
+background: #eee;
+border-radius: 1px;
+box-sizing: border-box;
+position: relative;
+box-sizing: content-box ;
+top: 8px;
+width: 20px;
+height: 20px;
+/* border-width: 0; */
+transition: all .1s linear;
+}
+input[type="checkbox"]:checked{
+  background-color: #06F;
+}
+input[type="checkbox"]:focus{
+  outline: 0 none;
+  box-shadow: none;
+}
+
+
+#loading_animation {
+    position: relative;
+    top: 10px;
+    height:30px;
+}
+
+
+.inputbar {
+    font-family: inherit;
+    position:relative;
+    /* top: -1px; */
+    margin: 5px auto;
+    height: 30px;
+    padding: 0 20px;
+    font-size: inherit;
+    border: 1px solid #000;
+    outline: none;
+}
+
+.inputbar:focus {
+  border: 1px solid #06F;
+  transition: 0.2s ease;
+  color: #000;
+}
+
+/* BUTTONS */
+button {
+    outline:none;
+    font-family: inherit;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    height: 31px;
+    border-radius: 0px;
+    color: #000000;
+    font-size: inherit;
+    background: #f0f0f0;
+    padding: 3px 15px 3px 15px;
+    margin: auto 15px 7px auto;
+    border: solid #000000 1px;
+    text-decoration: none;
+}
+button:hover {
+    color: #06F; 
+}
+button:active {
+    color: #0AF; 
+}
