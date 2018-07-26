@@ -157,6 +157,12 @@ if __name__=='__main__':
         print "Calculations correct"
 
     # db = DBInterface(fname="allsamples.db")
+    # babies = db.fetch_samples_matching({"dataset_name":"*", "sample_type": "BABY"})
+    # print len(babies)
+    # # map(db.delete_sample, babies)
+    # db.close()
+
+    # db = DBInterface(fname="allsamples.db")
     # tchi = db.fetch_samples_matching({"dataset_name":"/TChiNeu_mChi-300_mLSP-290_step1/namin-TChiNeu_mChi-300_mLSP-290_step2_miniAOD-eb69b0448a13fda070ca35fd76ab4e24/USER"})
     # tchi = db.fetch_samples_matching({"dataset_name":"/TChi%/namin-TChi%/USER"})
     # tchi = db.fetch_samples_matching({"dataset_name":"/GJets_HT-4*/*/*"})
