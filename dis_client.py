@@ -150,8 +150,9 @@ def test():
             {"type": "basic", "query": "/*/Run2016*-17Jul2018-v1/MINIAOD", "short":"short"},
             {"type": "basic", "query": "/DoubleMuon/Run2016*-17Jul2018-v1/MINIAOD"},
             {"type": "dbs", "query": "https://cmsweb.cern.ch/dbs/prod/global/DBSReader/files?dataset=/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM&detail=1&lumi_list=[134007]&run_num=1"},
+            {"type": "dbs", "query": "https://cmsweb.cern.ch/dqm/online/plotfairy/archive/300009/Global/Online/ALL/DT/01-Digi/Wheel-2/Sector1/Station1/OccupancyAllHits_perCh_W-2_St1_Sec1?session=;w=1426;h=718,raw"},
             {"type": "driver", "query": "/SMS-T5qqqqWW_mGl-600to800_mLSP-0to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/MINIAODSIM"},
-            {"type": "files", "query": "/TChiNeu*/namin-TChiNeu*/USER"},
+            {"type": "files", "query": "/TChiNeu*/namin-TChiNeu*/USER", "short":"short"},
             {"type": "lhe", "query": "/SMS-T5qqqqWW_mGl-600to800_mLSP-0to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/MINIAODSIM", "short":"short"},
             {"type": "mcm", "query": "/QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM | grep cross_section", "short":"short"},
             {"type": "parents", "query": "/SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM"},
@@ -165,11 +166,13 @@ def test():
     green = '\033[92m'
     red = '\033[91m'
     clear = '\033[0m'
+    import os
+    columns = int(os.popen('stty size', 'r').read().split()[1])-20
     for q_params in queries:
         detail = q_params.get("short","") != "short"
         to_print = "{0}: {1}{2}".format(q_params["type"], q_params["query"], " (detailed)" if detail else "")
-        if len(to_print) > 100:
-            to_print = to_print[:97] + "..."
+        if len(to_print) > columns:
+            to_print = to_print[:columns-3] + "..."
         t0 = time.time()
         data = query(q=q_params["query"],
                 typ=q_params["type"],

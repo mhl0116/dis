@@ -162,6 +162,20 @@ if __name__=='__main__':
     # # map(db.delete_sample, babies)
     # db.close()
 
+    # dborig = DBInterface(fname="allsamples.db")
+    # allsamples = dborig.fetch_samples_matching({"dataset_name":"*"})
+    # dborig.close()
+    # print len(allsamples)
+    # db = DBInterface(fname="newsamples.db")
+    # db.drop_table()
+    # db.make_table()
+    # for isamp,samp in enumerate(allsamples):
+    #     for k in samp:
+    #         if samp[k] == None: samp[k] = "" 
+    #     if isamp % 100 == 0: print isamp
+    #     db.update_sample(samp)
+    # db.close()
+
     # db = DBInterface(fname="allsamples.db")
     # tchi = db.fetch_samples_matching({"dataset_name":"/TChiNeu_mChi-300_mLSP-290_step1/namin-TChiNeu_mChi-300_mLSP-290_step2_miniAOD-eb69b0448a13fda070ca35fd76ab4e24/USER"})
     # tchi = db.fetch_samples_matching({"dataset_name":"/TChi%/namin-TChi%/USER"})
