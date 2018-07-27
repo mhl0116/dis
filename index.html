@@ -1,21 +1,21 @@
 <html>
 <head>
     <title>disMaker</title>
-    <link rel="stylesheet" type="text/css" href="css/pretty-json.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/pretty-json.css" />
     <link rel="icon" type="image/png" sizes="96x96" href="images/dislogo.png">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="js/main.js" ></script>
-    <script type="text/javascript" src="js/underscore-min.js" ></script>
-    <script type="text/javascript" src="js/backbone-min.js" ></script>
-    <script type="text/javascript" src="js/pretty-json-min.js" ></script>
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script defer type="text/javascript" src="js/main.js" ></script>
+    <script defer type="text/javascript" src="js/underscore-min.js" ></script>
+    <script defer type="text/javascript" src="js/backbone-min.js" ></script>
+    <script defer type="text/javascript" src="js/pretty-json-min.js" ></script>
 
 </head>
 
 <body>
 <center>
-    <h1>🚀<span class="highlight">D</span>AS <span class="highlight">I</span>s <span class="highlight">S</span>low</h1>
+    <h1><span id="rocket">🚀</span><span class="highlight">D</span>AS <span class="highlight">I</span>s <span class="highlight">S</span>low</h1>
     <!-- <h5>🏎️ Now ~20-50% faster, and GMO-free!</h5> -->
             <!-- <img height="50px" src="images/dislogo.png" /> -->
 </center>
@@ -52,7 +52,9 @@
     <!-- <center>this is your query</center> -->
     <!-- <pre> <div class="json" id="query"></div> </pre> -->
 <!-- </div> -->
-<center> <img id="loading_animation" src="images/loading.gif" /> </center>
+<!-- <center> <img id="loading_animation" src="images/loading.gif" /> </center> -->
+<!-- https://loading.io/css/ -->
+<center> <div id="loading_animation"><div></div><div></div></div> </center>
 <div id="result_container">
     <!-- <center>this is my response</center> -->
     <pre> <div class="json" id="result"></div> </pre>
@@ -62,6 +64,7 @@
     <!-- </center> -->
     <center> <span class="timing"></span> </center>
 </div>
+
 
 </body>
 </html>

@@ -103,6 +103,13 @@ $(function(){
         console.log(query_dict);
         submitQuery()
     }
+
+    $( "#rocket" ).click(function() {
+        $( "#rocket" ).animate({
+            left: "+=50",
+            top: "-=50"
+        }, 1500);
+    });
     
 });
 
