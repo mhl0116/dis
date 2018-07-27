@@ -283,11 +283,14 @@ def filelist_to_dict(files, short=False, num=10):
     return newfiles
 
 def make_response(query, payload, failed, fail_reason, warning):
+
     status = "success"
     if failed: status = "failed"
 
     timestamp = int(time.time())
     d =  { "query": query, "timestamp": timestamp, "response": { "status": status, "fail_reason": fail_reason, "warning": warning, "payload": payload } } 
+
+    cmd("echo {} {} {} {} >> log.txt".format(timestamp, query["type"], query.get("short",False), failed))
 
     # print d["response"]["fail_reason"]
     return json.dumps(d)
@@ -357,6 +360,9 @@ def get_pick_cms4(entity, selectors):
     return fnames
 
 def handle_query(arg_dict):
+
+    if not arg_dict: return
+
 
     query_type = arg_dict.get("type","basic")
     query = arg_dict.get("query", None).strip()
@@ -589,7 +595,6 @@ def handle_query(arg_dict):
             elif verb == "sort":
                 if type(payload) == list:
                     payload = sorted(payload)
-
 
     return make_response(arg_dict, payload, failed, fail_reason, warning)
 
