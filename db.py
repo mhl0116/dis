@@ -156,6 +156,7 @@ if __name__=='__main__':
     if db_tester.do_test():
         print "Calculations correct"
 
+
     # # Delete all baby samples
     # db = DBInterface(fname="allsamples.db")
     # babies = db.fetch_samples_matching({"dataset_name":"*", "sample_type": "BABY"})
