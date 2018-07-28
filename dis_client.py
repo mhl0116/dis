@@ -26,7 +26,7 @@ Or you can import dis_client and make a query using online syntax and get a json
 
 BASE_URL_PATTERN = "http://uaf-{NUM}.t2.ucsd.edu/~namin/dis/handler.py"
 
-def query(q, typ="basic", detail=False, force_uaf=None):
+def query(q, typ="basic", detail=False, force_uaf=None, timeout=999):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
     url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode(query_dict))
 
@@ -41,7 +41,7 @@ def query(q, typ="basic", detail=False, force_uaf=None):
     # for num in map(str,[8,10,6,3,4,5]):
         try:
             url = url_pattern.replace("{NUM}",num)
-            content =  urllib2.urlopen(url).read()
+            content =  urllib2.urlopen(url,timeout=timeout).read()
             data = json.loads(content)
             break
         except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
@@ -168,6 +168,25 @@ def test():
     clear = '\033[0m'
     import os
     columns = int(os.popen('stty size', 'r').read().split()[1])-20
+
+    print ">>> First, testing uafs that work"
+    for uaf in [1,3,4,5,7,8,10]:
+        to_print = "uaf-{0}".format(uaf)
+        t0 = time.time()
+        data = query(q="/DoubleMuon/Run2016*-17Jul2018-v1/MINIAOD",
+                # typ="snt",
+                typ="basic",
+                detail=False,
+                force_uaf=uaf,
+                timeout=10)
+        t1 = time.time()
+        status = "success"
+        if "response" not in data or data["response"]["status"] != "success":
+            status = "failed"
+        startcolor = green if status == "success" else red
+        print "[{0}{1}{2} ({3:.2f}s)] {4}".format(startcolor,status,clear,t1-t0,to_print)
+
+    print ">>> Now testing queries"
     for q_params in queries:
         detail = q_params.get("short","") != "short"
         to_print = "{0}: {1}{2}".format(q_params["type"], q_params["query"], " (detailed)" if detail else "")
