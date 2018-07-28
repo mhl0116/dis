@@ -284,13 +284,14 @@ def filelist_to_dict(files, short=False, num=10):
 
 def make_response(query, payload, failed, fail_reason, warning):
 
+
     status = "success"
     if failed: status = "failed"
 
     timestamp = int(time.time())
     d =  { "query": query, "timestamp": timestamp, "response": { "status": status, "fail_reason": fail_reason, "warning": warning, "payload": payload } } 
 
-    cmd("echo {} {} {} {} >> log.txt".format(timestamp, query["type"], query.get("short",False), failed))
+    cmd("echo {0} {1} {2} {3} >> log.txt".format(timestamp, query["type"], query.get("short",False), failed))
 
     # print d["response"]["fail_reason"]
     return json.dumps(d)
@@ -331,6 +332,7 @@ def get_snt_samples(entity, selectors, short=True):
     samples = sorted(samples, key = lambda x: x.get("cms3tag","")+str(x.get("nevents_out","0")), reverse=True)
 
     if short:
+        # import datetime
         new_samples = []
         for sample in samples:
             if sample["sample_type"] == "CMS3":
@@ -341,6 +343,8 @@ def get_snt_samples(entity, selectors, short=True):
                 for key in ["sample_id","filter_type","assigned_to", \
                             "comments","twiki_name","xsec","gtag","nevents_in","nevents_out","kfactor","filter_eff"]:
                     del sample[key]
+            # if "timestamp" in sample:
+            #     sample["timestamp"] = str(datetime.datetime.fromtimestamp(sample["timestamp"]))
             new_samples.append(sample)
         samples = new_samples
 
