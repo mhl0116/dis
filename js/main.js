@@ -1,9 +1,28 @@
+function isDict(v) {
+    return (typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date));
+}
+
+function preprocessJSON(json) {
+    for (var i = 0; i < json.length; i++) {
+        console.log(json[i]);
+        console.log(isDict(json[i]));
+        if (isDict(json[i]) && ("timestamp" in json[i])) {
+            json[i]["timestamp"] = new Date(json[i]["timestamp"]*1000);
+        }
+    }
+    
+    return json;
+}
 function prettyJSON(elem, json) {
+
+    json = preprocessJSON(json);
+
     var node = new PrettyJSON.view.Node({ 
         el:elem,
-        data:json
+        data:json,
     });
     node.expandAll();
+
 }
 
 var t0;
@@ -66,6 +85,7 @@ function getQueryURL() {
     queryURL = queryURL.replace("index.html","");
     console.log(queryURL);
     copyToClipboard(queryURL)
+    $("#aqueryurl").stop().fadeOut(50).fadeIn(50);
 }
 
 function getQueryCLI() {
@@ -76,6 +96,7 @@ function getQueryCLI() {
     var clicmd = "dis_client.py -t "+data["type"]+" "+extra+"\""+data["query"]+"\"";
     console.log(clicmd);
     copyToClipboard(clicmd)
+    $("#aquerycli").stop().fadeOut(50).fadeIn(50);
 }
 
 
@@ -116,7 +137,7 @@ $(function(){
 // vimlike incsearch: press / to focus on search box
 $(document).keydown(function(e) {
     var target = $(event.target);
-    console.log(e.keyCode);
+    // console.log(e.keyCode);
     if (!target.is("#query") && !target.is("#select_type")) {
         if(e.keyCode == 191) {
             // / focus search box
@@ -124,12 +145,13 @@ $(document).keydown(function(e) {
             $("#query").focus().select();
         }
         // y to copy url
+        // Y to copy cli command
         if(e.keyCode== 89) {
-            getQueryURL();
-        }
-        // c to copy cli command
-        if(e.keyCode== 67) {
-            getQueryCLI();
+            if (e.shiftKey) {
+                getQueryCLI();
+            } else {
+                getQueryURL();
+            }
         }
     }
 });
