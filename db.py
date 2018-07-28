@@ -25,7 +25,7 @@ class DBInterface():
                 ("baby_tag", "VARCHAR(40)"),
                 ("analysis", "VARCHAR(30)"),
                 ("assigned_to", "VARCHAR(30)"),
-                ("comments", "VARCHAR(600)"),
+                ("comments", "VARCHAR(200)"),
                 ]
 
     def drop_table(self):
@@ -156,12 +156,29 @@ if __name__=='__main__':
     if db_tester.do_test():
         print "Calculations correct"
 
+    # # Delete all baby samples
     # db = DBInterface(fname="allsamples.db")
     # babies = db.fetch_samples_matching({"dataset_name":"*", "sample_type": "BABY"})
     # print len(babies)
     # # map(db.delete_sample, babies)
     # db.close()
 
+    # # Delete samples which no longer exist in hadoop
+    # import os
+    # db = DBInterface(fname="allsamples.db")
+    # samples = db.fetch_samples_matching({"dataset_name":"*"})
+    # to_delete = []
+    # for s in samples:
+    #     loc = s["location"]
+    #     if not os.path.exists(loc):
+    #         to_delete.append(s)
+    # print len(to_delete)
+    # map(db.delete_sample, to_delete)
+    # db.close()
+
+    # # Copy all samples from allsamples.db to newsamples.db
+    # # If you remove samples and close the db like above, the file size is the same,
+    # # so I guess you have to do this dummy copying to "recompress" it?
     # dborig = DBInterface(fname="allsamples.db")
     # allsamples = dborig.fetch_samples_matching({"dataset_name":"*"})
     # dborig.close()
