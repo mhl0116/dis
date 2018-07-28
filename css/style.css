@@ -8,11 +8,9 @@
     width:90%;
     border: 1px solid #333;
     padding: 5px;
-    // border-style: none;
     margin-left: auto;
     margin-right: auto;
     font-size: 80%;
-
 }
 
 #rocket{
@@ -142,4 +140,10 @@ kbd {
     height: 29px;
     opacity: 0;
   }
+}
+
+/* override pretty-json class to use open sans instead of courier */
+/* comment out the below style to revert */
+.node-content-wrapper {
+    font-family: "Open Sans", sans-serif;
 }
