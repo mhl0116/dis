@@ -177,7 +177,7 @@ def test():
                 typ="basic",
                 detail=False,
                 force_uaf=uaf,
-                timeout=10)
+                timeout=15)
         t1 = time.time()
         status = "success"
         if "response" not in data or data["response"]["status"] != "success":
@@ -195,7 +195,8 @@ def test():
         data = query(q=q_params["query"],
                 typ=q_params["type"],
                 detail=detail,
-                force_uaf=None)
+                force_uaf=None,
+                timeout=30)
         t1 = time.time()
         status = data["response"]["status"]
         startcolor = green if status == "success" else red
