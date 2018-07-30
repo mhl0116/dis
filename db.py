@@ -24,8 +24,8 @@ class DBInterface():
                 ("cms3tag", "VARCHAR(40)"),
                 ("baby_tag", "VARCHAR(40)"),
                 ("analysis", "VARCHAR(30)"),
-                ("assigned_to", "VARCHAR(30)"),
-                ("comments", "VARCHAR(200)"),
+                ("assigned_to", "VARCHAR(20)"),
+                ("comments", "VARCHAR(100)"),
                 ]
 
     def drop_table(self):
@@ -35,8 +35,25 @@ class DBInterface():
         sql_cmd = "CREATE TABLE sample (%s)" % ",".join(["%s %s" % (key, typ) for (key, typ) in self.key_types])
         self.cursor.execute(sql_cmd)
 
-    # import time    
-    # print time.strftime('%Y-%m-%d %H:%M:%S')
+    def load_from_csv(self,fname):
+        import csv
+        self.drop_table()
+        self.make_table()
+        with open(fname,'r') as fin:
+            # csv.DictReader uses first line in file for column headings by default
+            dr = csv.DictReader(fin) # comma is default delimiter
+            for d in dr:
+                self.do_insert_dict(d)
+        self.connection.commit()
+
+    def export_to_csv(self,fname):
+        import csv
+        self.cursor.execute('SELECT * FROM sample')
+        with open(fname,'w') as fhout:
+          csv_out = csv.writer(fhout)
+          csv_out.writerow([d[0] for d in self.cursor.description])
+          for result in self.cursor:
+              csv_out.writerow(result)
 
     def make_val_str(self, vals):
         return map(lambda x: '"%s"' % x if type(x) in [str,unicode] else str(x), vals)
@@ -79,7 +96,6 @@ class DBInterface():
         # return list of sample dictionaries
         self.cursor.execute(query)
         col_names = [e[0] for e in self.cursor.description]
-        self.cursor.execute(query)
         toreturn = []
         for r in self.cursor.fetchall():
             toreturn.append( dict(zip(col_names, r)) )
@@ -156,6 +172,14 @@ if __name__=='__main__':
     if db_tester.do_test():
         print "Calculations correct"
 
+    # # Use CSV to make modifications
+    # db = DBInterface(fname="allsamples.db")
+    # db.export_to_csv("temp.csv")
+    # db.close()
+    # # # edit temp.csv to remove or modify properties, then comment out the above 3 lines and run the below 3 lines to load the csv into the .db file permanently
+    # # db = DBInterface(fname="allsamples.db")
+    # # db.load_from_csv("temp.csv")
+    # # db.close()
 
     # # Delete all baby samples
     # db = DBInterface(fname="allsamples.db")

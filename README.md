@@ -213,7 +213,15 @@ dis_client.py -t snt "/gjet*ht-*/*/*,cms3tag=*V08* | grep nevents_out | stats"
 * There is also a `sort`.
 
 ### SQL tips
-* Dump the SNT `.db` file to a csv for quick grepping/visual inspection with `sqlite3 -header -csv allsamples.db "select * from sample;" > out.csv`
+* Dump the SNT `.db` file to a `.csv` for quick grepping/visual inspection with
+```bash
+# dump .db to .csv
+python -c 'from db import DBInterface; db = DBInterface(fname="allsamples.db"); db.export_to_csv("temp.csv"); db.close()'
+# and then you can edit `temp.csv` or do whatever in plaintext
+# load .csv back into .db
+python -c 'from db import DBInterface; db = DBInterface(fname="allsamples.db"); db.load_from_csv("temp.csv"); db.close()'
+```
+* (for pure bash, `sqlite3 -header -csv allsamples.db "select * from sample;" > out.csv`)
 * There are many examples of usage at the bottom of `db.py`, in `db_tester.py` and in the `snt`/`update_snt`/`delete_snt` sections of `api.py`.
 
 ### API Usage
