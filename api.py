@@ -56,6 +56,8 @@ def dataset_event_count(dataset):
     # get event count and other information from dataset
     url = "https://cmsweb.cern.ch/dbs/prod/%s/DBSReader/filesummaries?dataset=%s&validFileOnly=1" % (get_dbs_instance(dataset),dataset)
     ret = get_url_with_cert(url)
+    if type(ret) == dict and (ret.get("type",None)=="HTTPError") and "message" in ret:
+        raise RuntimeError("Exception from DBS: {0}".format(ret["message"]))
     if len(ret) > 0:
         if ret[0]:
             return { "nevents": ret[0]['num_event'], "filesizeGB": round(ret[0]['file_size']/1.9e9,2), "nfiles": ret[0]['num_file'], "nlumis": ret[0]['num_lumi'] }
