@@ -6,7 +6,7 @@
 * Clone this repository into your `~/public_html/` directory. 
 
 ### Permissions
-* Make sure all python files have `chmod 755` including the directories they reside in. (`chmod 755 ../dis/`)
+* Make sure all python files have `chmod 755` (e.g., `chmod 755 handler.py`) including the directories they reside in. (`chmod 755 ../dis/`)
 * Make sure your `~/public_html/.htaccess` file has the following content
 ```
 AddHandler cgi-script .cgi .py

@@ -14,15 +14,12 @@ function preprocessJSON(json) {
     return json;
 }
 function prettyJSON(elem, json) {
-
     json = preprocessJSON(json);
-
     var node = new PrettyJSON.view.Node({ 
         el:elem,
         data:json,
     });
     node.expandAll();
-
 }
 
 var t0;
@@ -35,30 +32,32 @@ function handleResponse(response) {
             prettyJSON($("#result"), response["response"]);
         }
     }
-    $("#loading_animation").hide();
     $("#result_container").show();
-    $(".timing").html("loaded in " + (new Date().getTime()-t0)/1000 + " seconds");
+    $("#query").siblings("i").removeClass("loading");
+    var secs = (new Date().getTime()-t0)/1000;
+    var which = "success";
+    if (secs > 3.0) { which = "warning"; }
+    if (secs > 10.0) { which = "error"; }
+    $("#timing").html(`loaded in
+        <span class="label label-${which} label-rounded">${secs}</span>
+        seconds`);
+    $("#query").blur();
 }
 function doSubmit(data) {
-    $("#loading_animation").show();
-    // $("#query_container").show();
-    // prettyJSON($('#query'), data);
-
-    // var cli_str = "dis_client.py ";
-    // if(data["type"] != "basic") cli_str += "-t " + data["type"] + " ";
-    // if(data["short"] != "short") cli_str += "--detail ";
-    // cli_str += '"' + data["query"] + '"';
-    // $('#clisyntax').html(cli_str);
-
+    if ($("#query").is(":invalid")) {
+        return;
+    }
+    $("#query").siblings("i").addClass("loading");
     $("#result_container").hide();
     t0 = new Date().getTime();
+    console.log("data");
+    console.log(data);
     $.get("handler.py", data)
         .done(function(response) {})
         .always(handleResponse);
 }
 
 function initHide() {
-    // $("#query_container").hide();
     $("#result_container").hide();
     $("#loading_animation").hide();
 }
@@ -85,7 +84,9 @@ function getQueryURL() {
     queryURL = queryURL.replace("index.html","");
     console.log(queryURL);
     copyToClipboard(queryURL)
-    $("#aqueryurl").stop().fadeOut(50).fadeIn(50);
+    $("#aqueryurl").addClass('btn-primary').delay(75).queue(function(next){
+         $(this).removeClass('btn-primary').dequeue();
+    });
 }
 
 function getQueryCLI() {
@@ -96,14 +97,35 @@ function getQueryCLI() {
     var clicmd = "dis_client.py -t "+data["type"]+" "+extra+"\""+data["query"]+"\"";
     console.log(clicmd);
     copyToClipboard(clicmd)
-    $("#aquerycli").stop().fadeOut(50).fadeIn(50);
+    $("#aquerycli").addClass('btn-primary').delay(75).queue(function(next){
+         $(this).removeClass('btn-primary').dequeue();
+    });
 }
 
 
 $(function(){
 
+    $.ajaxSetup({timeout: 15000});
+
+    $("#select_type").change(function(e) {
+        console.log(e);
+        var val = e.target.value;
+        console.log(val);
+        if (["snt","dbs","sites"].includes(val)) {
+            $("#query").removeAttr("pattern");
+            $("#query").removeAttr("oninvalid");
+            console.log("not setting pattern");
+            console.log($("#query"));
+        } else {
+            $("#query").attr("pattern", "/.+/.+/[^/]+");
+            $("#query").attr("title", 'Need 3 slashes in dataset name');
+            console.log("yep... setting pattern");
+        }
+        console.log( "Handler for .change() called." );
+    });
+
     initHide();
-    $(".submit_button").click(submitQuery);
+    $("#submit_button").click(submitQuery);
 
     // if page was loaded with a parameter for search, then simulate a search
     if(window.location.href.indexOf("?") != -1) {
@@ -116,8 +138,9 @@ $(function(){
         query_dict["type"] = query_dict["type"] || "basic";
 
         // check or uncheck short box, pick dropdown item, and fill in query box
-        document.getElementById("short").checked = Boolean(query_dict["short"]);
-        $("#select_type").val(query_dict["type"])
+        document.getElementById("checkboxshort").checked = Boolean(query_dict["short"]);
+        $("#select_type").val(query_dict["type"]);
+        $("#select_type").trigger("change");
         $("#query").val(query);
 
         // submit
@@ -131,6 +154,7 @@ $(function(){
             top: "-=50"
         }, 1500);
     });
+
     
 });
 

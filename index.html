@@ -1,58 +1,81 @@
 <html>
 <head>
     <title>disMaker</title>
-    <link rel="stylesheet" type="text/css" href="css/pretty-json.css" />
+    <link defer rel="stylesheet" type="text/css" href="css/pretty-json.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="icon" type="image/png" sizes="96x96" href="images/dislogo.png">
+    <link defer rel="icon" type="image/png" sizes="96x96" href="images/dislogo.png">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="js/main.js" ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.3/spectre.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.3/spectre-icons.min.css" /> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.3/spectre-exp.min.css" /> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script defer type="text/javascript" src="js/underscore-min.js" ></script>
     <script defer type="text/javascript" src="js/backbone-min.js" ></script>
     <script defer type="text/javascript" src="js/pretty-json-min.js" ></script>
+    <script defer type="text/javascript" src="js/main.js" ></script>
 
 </head>
 
 <body>
-<center>
-    <h1><span id="rocket">🚀</span><span class="highlight">D</span>AS <span class="highlight">I</span>s <span class="highlight">S</span>low</h1>
-</center>
-<form id="main_form" action="javascript:void(0)">
-<center>
-    <input type="text" class="inputbar" id="query" name="query" placeholder="query ('/' to focus)" style="width:450px;"/>
-    <select id="select_type" class="inputbar selectbar" name="type" style="width:120px;">
-        <option value="basic">basic</option>
-        <option value="files">files</option>
-        <option value="config">config</option>
-        <option value="mcm">mcm</option>
-        <option value="driver">driver</option>
-        <option value="parents">parents</option>
-        <option value="lhe">lhe</option>
-        <option value="snt">snt</option>
-        <option value="dbs">dbs</option>
-        <option value="runs">runs</option>
-        <option value="sites">sites</option>
-        <option value="pick">pick</option>
-        <option value="pick_cms4">pick_cms4</option>
-    </select>
-    <input type="checkbox" id="short" name="short" value="short" checked>short &ensp;
-    <button class="submit_button" value="submit">submit</button>
-    <a  href="#" id="aqueryurl" onClick="getQueryURL();">Copy as URL</a> <kbd>y</kbd>
-    &nbsp; &nbsp;
-    <a  href="#" id="aquerycli" onClick="getQueryCLI();">Copy CLI</a> <kbd>Y</kbd>
-    &nbsp; &nbsp;
-    <a  href="https://github.com/aminnj/dis" >Help</a>
-    <br>
-</center>
-</form>
+    <div class="container">
+        <center>
+            <h2>
+                <span id="rocket">🚀</span>
+                &nbsp;
+                <span class="text-primary">D</span>AS
+                <span class="text-primary">I</span>s
+                <span class="text-primary">S</span>low
+            </h2>
+        </center>
 
-<!-- https://loading.io/css/ -->
-<center> <div id="loading_animation" style="display:none;"><div></div><div></div></div> </center>
-<div id="result_container" style="display:none;">
-    <pre> <div class="json" id="result"></div> </pre>
-    <center> <span class="timing"></span> </center>
-</div>
+        <div class="columns">
+            <div class="column col-9">
+                <form id="main_form" class="float-right form-group input-group" action="javascript:void(0)">
+                    <!-- <div class="has-icon-right tooltip" data-tooltip="press '/' to focus"> -->
+                    <div class="has-icon-right">
+                        <input autofocus type="search" class="form-input input-sm" id="query" name="query" placeholder="Query" />
+                        <i class="form-icon"></i>
+                    </div>
+                    <select id="select_type" class="form-select select-sm" name="type">
+                        <option value="basic">basic</option>
+                        <option value="files">files</option>
+                        <option value="config">config</option>
+                        <option value="mcm">mcm</option>
+                        <option value="driver">driver</option>
+                        <option value="parents">parents</option>
+                        <option value="lhe">lhe</option>
+                        <option value="snt">snt</option>
+                        <option value="dbs">dbs</option>
+                        <option value="runs">runs</option>
+                        <option value="sites">sites</option>
+                        <option value="pick">pick</option>
+                        <option value="pick_cms4">pick_cms4</option>
+                    </select>
+                    <button id="submit_button" class="btn btn-primary input-group-btn btn-sm" value="submit">submit</button>
+                    &nbsp;
+                    <label class="form-switch input-sm tooltip" data-tooltip="short">
+                        <input type="checkbox" id="checkboxshort" value="short" name="short" checked>
+                        <i class="form-icon"></i>
+                    </label>
+                </form>
+            </div>
+            <div class="column col-3 float-left">
+                <div class="btn-group">
+                    <button  class="btn btn-sm" href="#" id="aqueryurl" onClick="getQueryURL();">Copy as URL</button> 
+                    <button  class="btn btn-sm" href="#" id="aquerycli" onClick="getQueryCLI();">Copy CLI</button>
+                    <a  class="btn btn-sm" target="_blank" href="https://github.com/aminnj/dis" >Help</a>
+                </div>
+            </div>
+        </div>
+        <div id="result_container" style="display:none;">
+        <div class="json" id="result"></div> 
+            <center> 
+                <small id="timing"><small>
+            </center>
+        </div>
 
+    </div>
 
 </body>
 </html>
