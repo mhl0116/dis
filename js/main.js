@@ -123,6 +123,7 @@ $(function(){
         }
         console.log( "Handler for .change() called." );
     });
+    $("#select_type").trigger("change");
 
     initHide();
     $("#submit_button").click(submitQuery);
