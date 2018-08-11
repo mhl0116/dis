@@ -1,11 +1,12 @@
+var timer;
+var liveSearch = false;
+
 function isDict(v) {
     return (typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date));
 }
 
 function preprocessJSON(json) {
     for (var i = 0; i < json.length; i++) {
-        console.log(json[i]);
-        console.log(isDict(json[i]));
         if (isDict(json[i]) && ("timestamp" in json[i])) {
             json[i]["timestamp"] = new Date(json[i]["timestamp"]*1000);
         }
@@ -37,20 +38,19 @@ function handleResponse(response) {
     var secs = (new Date().getTime()-t0)/1000;
     var which = "success";
     if (secs > 3.0) { which = "warning"; }
-    if (secs > 10.0) { which = "error"; }
+    if (secs > 30.0) { which = "error"; }
     $("#timing").html(`loaded in
         <span class="label label-${which} label-rounded">${secs}</span>
         seconds`);
-    $("#query").blur();
+    // $("#query").blur();
 }
 function doSubmit(data) {
     if ($("#query").is(":invalid")) {
         return;
     }
     $("#query").siblings("i").addClass("loading");
-    $("#result_container").hide();
+    // $("#result_container").hide();
     t0 = new Date().getTime();
-    console.log("data");
     console.log(data);
     $.get("handler.py", data)
         .done(function(response) {})
@@ -65,7 +65,6 @@ function initHide() {
 function submitQuery() {
     var data = {};
     $.each($("#main_form").serializeArray(), function (i, field) { data[field.name] = field.value || ""; });
-    console.log(data);
     doSubmit(data);
 }
 
@@ -102,26 +101,25 @@ function getQueryCLI() {
     });
 }
 
+function toggleLive() {
+    liveSearch ^= true;
+    console.log(liveSearch);
+}
 
 $(function(){
 
-    $.ajaxSetup({timeout: 15000});
+    $.ajaxSetup({timeout: 45000});
 
     $("#select_type").change(function(e) {
-        console.log(e);
         var val = e.target.value;
         console.log(val);
         if (["snt","dbs","sites"].includes(val)) {
             $("#query").removeAttr("pattern");
             $("#query").removeAttr("oninvalid");
-            console.log("not setting pattern");
-            console.log($("#query"));
         } else {
             $("#query").attr("pattern", "/.+/.+/[^/]+");
             $("#query").attr("title", 'Need 3 slashes in dataset name');
-            console.log("yep... setting pattern");
         }
-        console.log( "Handler for .change() called." );
     });
     $("#select_type").trigger("change");
 
@@ -146,7 +144,7 @@ $(function(){
 
         // submit
         console.log(query_dict);
-        submitQuery()
+        submitQuery();
     }
 
     $( "#rocket" ).click(function() {
@@ -156,13 +154,29 @@ $(function(){
         }, 1500);
     });
 
+    $("#query").keyup(function(e) {
+        if (!liveSearch) return;
+        var code = (e.keyCode || e.which);
+        // arrow keys shouldn't cause an update
+        if (code >= 37 && code <= 40) return;
+        if (e.ctrlKey) {
+            // ctrl A, E, B, F readline movement shouldn't update either
+            if (code == 69 || code == 65 || code == 66 || code == 70) return;
+        }
+        clearTimeout(timer);
+        var ms = 400; // milliseconds
+        var val = this.value;
+        timer = setTimeout(function() {
+            submitQuery();
+        }, ms);
+    });
+
     
 });
 
 // vimlike incsearch: press / to focus on search box
 $(document).keydown(function(e) {
     var target = $(event.target);
-    // console.log(e.keyCode);
     if (!target.is("#query") && !target.is("#select_type")) {
         if(e.keyCode == 191) {
             // / focus search box
