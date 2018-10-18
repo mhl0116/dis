@@ -35,6 +35,10 @@ function handleResponse(response) {
     }
     $("#result_container").show();
     $("#query").siblings("i").removeClass("loading");
+    $("#result").addClass('highlight').delay(150).queue(function(next){
+         $(this).removeClass('highlight').dequeue();
+    });
+
     var secs = (new Date().getTime()-t0)/1000;
     var which = "success";
     if (secs > 3.0) { which = "warning"; }
@@ -55,11 +59,6 @@ function doSubmit(data) {
     $.get("handler.py", data)
         .done(function(response) {})
         .always(handleResponse);
-}
-
-function initHide() {
-    $("#result_container").hide();
-    $("#loading_animation").hide();
 }
 
 function submitQuery() {
@@ -122,8 +121,6 @@ $(function(){
         }
     });
     $("#select_type").trigger("change");
-
-    initHide();
     $("#submit_button").click(submitQuery);
 
     // if page was loaded with a parameter for search, then simulate a search
@@ -138,6 +135,8 @@ $(function(){
 
         // check or uncheck short box, pick dropdown item, and fill in query box
         document.getElementById("checkboxshort").checked = Boolean(query_dict["short"]);
+        liveSearch = Boolean(query_dict["live"]);
+        document.getElementById("checkboxlive").checked = liveSearch;
         $("#select_type").val(query_dict["type"]);
         $("#select_type").trigger("change");
         $("#query").val(query);
@@ -154,21 +153,20 @@ $(function(){
         }, 1500);
     });
 
+    var lastVal = "";
     $("#query").keyup(function(e) {
         if (!liveSearch) return;
-        var code = (e.keyCode || e.which);
-        // arrow keys shouldn't cause an update
-        if (code >= 37 && code <= 40) return;
-        if (e.ctrlKey) {
-            // ctrl A, E, B, F readline movement shouldn't update either
-            if (code == 69 || code == 65 || code == 66 || code == 70) return;
+        if (this.value == lastVal) return;
+        if (lastVal == "") {
+            lastVal = this.value;
+            return;
+        } else {
+            lastVal = this.value;
         }
         clearTimeout(timer);
-        var ms = 400; // milliseconds
-        var val = this.value;
         timer = setTimeout(function() {
             submitQuery();
-        }, ms);
+        }, 400);
     });
 
     
