@@ -60,7 +60,7 @@ def dataset_event_count(dataset):
         raise RuntimeError("Exception from DBS: {0}".format(ret["message"]))
     if len(ret) > 0:
         if ret[0]:
-            return { "nevents": ret[0]['num_event'], "filesizeGB": round(ret[0]['file_size']/1.9e9,2), "nfiles": ret[0]['num_file'], "nlumis": ret[0]['num_lumi'] }
+            return { "nevents": ret[0]['num_event'], "filesizeGB": round(ret[0]['file_size']/1.0e9,2), "nfiles": ret[0]['num_file'], "nlumis": ret[0]['num_lumi'] }
     return None
 
 def list_of_datasets(wildcardeddataset, short=False, selectors=[]):
@@ -147,7 +147,14 @@ def get_pick_events(dataset, runlumievts):
         if d_info["fail"]: runs_failed_to_find.append(d_info["run"])
         else: files.extend([f[0] for f in d_info["filesinfo"]])
 
-    payload = list(set(files))
+    files = list(set(files))
+    payload = {
+            "files": files,
+            "cmd": "events='{0}'; files='{1}'; edmCopyPickMerge outputFile=output.root eventsToProcess=${{events}} inputFiles=${{files}}".format(
+                ",".join([":".join(rle.split(":")[::2]) for rle in runlumievts]),
+                ",".join(files),
+                ),
+            }
     warning = ("Failed to find run(s) %s." % (",".join(map(str,runs_failed_to_find)))) if runs_failed_to_find else ""
 
     return payload, warning
@@ -356,7 +363,8 @@ def get_pick_cms4(entity, selectors):
     samples = get_snt_samples(entity, [])
     sample = samples[0]
     metadata = "{0}/metadata.json".format(sample["location"])
-    storefiles, warning = get_pick_events(entity, selectors)
+    dout, warning = get_pick_events(entity, selectors)
+    storefiles = dout["files"]
     ijobs = []
     with open(metadata,"r") as fhin:
         data = json.load(fhin)
@@ -413,7 +421,10 @@ def handle_query(arg_dict):
 
 
     try:
-        if query_type == "basic":
+        if query_type == "snt":
+            payload = get_snt_samples(entity, selectors, short)
+
+        elif query_type == "basic":
             info = dataset_event_count(entity)
             if not info:
                 failed = True
@@ -502,10 +513,6 @@ def handle_query(arg_dict):
             files = get_dataset_files(lhe)
             payload["files"] = filelist_to_dict(files, short)
 
-        elif query_type == "snt":
-
-
-            payload = get_snt_samples(entity, selectors, short)
 
         elif query_type == "update_snt":
             from db import DBInterface
@@ -630,6 +637,7 @@ if __name__=='__main__':
     # arg_dict = {"type": "basic", "query": "/DY*/*18MiniAOD*/MINIAODSIM", "short":"short"}
     # arg_dict = {"type": "sites", "query": "/ZeroBias/Run2016F-17Jul2018-v1/MINIAOD", "short":"short"}
     # arg_dict = {"type": "snt", "query": "/DY*/*MiniAOD*/MINIAODSIM | grep nevents_out | sort", "short":"short"}
+    # arg_dict = {"type": "basic", "query": "/DoubleEG/Run2017F-09May2018-v1/d", "short":"short"}
     
     print handle_query(arg_dict)
 
