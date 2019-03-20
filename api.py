@@ -199,9 +199,11 @@ def get_specified_parent(dataset, typ="LHE", fallback=None):
     else:
         raise LookupError("Could not find parent dataset")
 
-def get_file_replicas(filename):
-    payload = get_url_with_cert("https://cmsweb.cern.ch/phedex/datasvc/json/prod/fileReplicas?lfn=%s" % filename)
-    block = payload["phedex"]["block"][0]
+def get_file_replicas(filename,typ="lfn"):
+    payload = get_url_with_cert("https://cmsweb.cern.ch/phedex/datasvc/json/prod/fileReplicas?%s=%s" % (typ,filename))
+    block = payload["phedex"]["block"]
+    if typ == "lfn":
+        block = block[0]
     return {"block": block}
 
 def get_replica_fractions(datasets):
@@ -442,11 +444,14 @@ def handle_query(arg_dict):
             if "/store/" in entity:
                 payload = get_file_replicas(entity)
             else:
-                datasets = list_of_datasets(entity, short=True)
-                if not datasets:
-                    failed = True
-                    fail_reason = "No datasets found"
-                payload = get_replica_fractions(datasets)
+                if short:
+                    datasets = list_of_datasets(entity, short=True)
+                    if not datasets:
+                        failed = True
+                        fail_reason = "No datasets found"
+                    payload = get_replica_fractions(datasets)
+                else:
+                    payload = get_file_replicas(entity, typ="dataset")
 
         elif query_type == "files":
             files = get_dataset_files(entity, selectors=selectors)
@@ -638,6 +643,7 @@ if __name__=='__main__':
     # arg_dict = {"type": "sites", "query": "/ZeroBias/Run2016F-17Jul2018-v1/MINIAOD", "short":"short"}
     # arg_dict = {"type": "snt", "query": "/DY*/*MiniAOD*/MINIAODSIM | grep nevents_out | sort", "short":"short"}
     # arg_dict = {"type": "basic", "query": "/DoubleEG/Run2017F-09May2018-v1/d", "short":"short"}
+    # arg_dict = {"type": "sites", "query": "/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"}
     
     print handle_query(arg_dict)
 
