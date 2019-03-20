@@ -56,3 +56,14 @@ html {
 .node-content-wrapper {
     font-family: inherit;
 }
+
+#result {
+    font-family: Sans-Serif;
+    font-size: 80%; !important
+}
+.tabulator .tabulator-row {
+    min-height: 8px;
+}
+.tabulator .tabulator-row .tabulator-cell {
+    padding: 3px;
+}

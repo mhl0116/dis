@@ -23,14 +23,42 @@ function prettyJSON(elem, json) {
     node.expandAll();
 }
 
+var tableDrawn = false;
+function toggleTable() {
+    if (tableDrawn) {
+        prettyJSON($("#result"), latestresult);
+        $("#result").removeClass("tabulator");
+    } else {
+        var table = new Tabulator("#result", {
+            data:latestresult,
+            // height:"80%", // this messes up height when switching back from table
+            layout:"fitColumns",
+            columns:[
+                {title:"dataset_name", field:"dataset_name",minWidth:600},
+                {title:"cms3tag", field:"cms3tag",sorter:"string",minWidth:100},
+                {title:"age", field:"timestamp", formatter:"datetimediff", formatterParams:{humanize:true}, sorter:"date"},
+                {title:"nevents", field:"nevents_out"},
+                {title:"xsec", field:"xsec"},
+                {title:"kfact", field:"kfactor"},
+                {title:"location", field:"location",minWidth:300},
+            ]
+        });
+    }
+    tableDrawn ^= true;
+    console.log(tableDrawn);
+}
+
 var t0;
+var latestresult = {};
 function handleResponse(response) {
     console.log(response);
     if (response && ("response" in response)) {
         if(response["response"]["status"] == "success" && response["response"]["warning"].length == 0) {
             prettyJSON($("#result"), response["response"]["payload"]);
+            latestresult = response["response"]["payload"];
         } else {
             prettyJSON($("#result"), response["response"]);
+            latestresult = {};
         }
     }
     $("#result_container").show();
@@ -38,6 +66,15 @@ function handleResponse(response) {
     $("#result").addClass('highlight').delay(150).queue(function(next){
          $(this).removeClass('highlight').dequeue();
     });
+    $(".string").mousedown(
+        function(e) {
+            // middle mouse button
+            if(e.which == 2) {
+                // double replace instead of regex (replace(/"/g,"")) because of vim highlighting
+                console.log(e.target); $("#query").val(e.target.innerHTML.replace('"',"").replace('"',"").trim());
+            }
+        }
+    )
 
     var secs = (new Date().getTime()-t0)/1000;
     var which = "success";
