@@ -197,6 +197,7 @@ class MCMApiTest(unittest.TestCase):
         nsteps = len(self.chainid.split("_")[1:])
         self.assertEqual(len(out["payload"]),nsteps)
         self.assertTrue(all("#!/bin/bash" in x["driver"] for x in out["payload"]))
+        self.assertTrue(all("cmssw_release" in x for x in out["payload"]))
         # dataset->chainid, chainid->list of prepids, for each prepid get info and driver -- so 1+1+2*nsteps queries
         self.assertEqual(len(out["urls"]),2+2*nsteps)
 
