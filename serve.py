@@ -14,7 +14,7 @@ from api import Fetcher, \
         SNTApi, PMPApi, XSDBApi
 from utils import transform_output, transform_input, enable_requests_caching
 
-enable_requests_caching("test3",expire_after=3000)
+enable_requests_caching("maincache",expire_after=3000)
 f = Fetcher()
 sntdb = SNTDBInterface(fname="allsamples.db")
 def do_query(query, query_type, short=True):
@@ -54,12 +54,22 @@ def do_query(query, query_type, short=True):
 
     return ret
 
-@app.route('/main', methods=["GET"])
+@app.after_request
+def add_headers(response):
+    response.headers.add('Content-Type', 'application/json')
+    # response.headers.add('Cache-Control', 'max-age=300')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Expose-Headers', 'Content-Type,Content-Length,Authorization,X-Pagination')
+    return response
+
+@app.route('/dis/serve', methods=["GET"])
 def main():
     print "---> Running main"
     query = request.args.get("query")
     short = request.args.get("short",True)
-    query_type = request.args.get("query_type","basic")
+    query_type = request.args.get("type","basic")
     print request.args
     t0 = time.time()
     js = do_query(query,query_type=query_type,short=short)
@@ -68,11 +78,12 @@ def main():
     print duration
     return jsonify(js)
 
-@app.route('/clearcache')
+@app.route('/dis/clearcache')
 def clearcache():
     requests_cache.clear()
     return jsonify(dict(status="success"))
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=8887, threaded=True, debug=True)
+    # app.run(host="localhost", port=8887, threaded=True, debug=True)
+    app.run(host="0.0.0.0", port=50010, threaded=True, debug=True)
 
