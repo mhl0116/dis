@@ -52,12 +52,12 @@ var t0;
 var latestresult = {};
 function handleResponse(response) {
     console.log(response);
-    if (response && ("response" in response)) {
-        if(response["response"]["status"] == "success" && response["response"]["warning"].length == 0) {
-            prettyJSON($("#result"), response["response"]["payload"]);
-            latestresult = response["response"]["payload"];
+    if (response && ("payload" in response)) {
+        if(response["status"] == "success") {
+            prettyJSON($("#result"), response["payload"]);
+            latestresult = response["payload"];
         } else {
-            prettyJSON($("#result"), response["response"]);
+            prettyJSON($("#result"), response);
             latestresult = {};
         }
     }
@@ -93,7 +93,7 @@ function doSubmit(data) {
     // $("#result_container").hide();
     t0 = new Date().getTime();
     console.log(data);
-    $.get("handler.py", data)
+    $.get("http://uafino.physics.ucsb.edu:50010/dis/serve", data)
         .done(function(response) {})
         .always(handleResponse);
 }
@@ -101,6 +101,7 @@ function doSubmit(data) {
 function submitQuery() {
     var data = {};
     $.each($("#main_form").serializeArray(), function (i, field) { data[field.name] = field.value || ""; });
+    if (data["short"] == "short") data["short"] = true;
     doSubmit(data);
 }
 
