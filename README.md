@@ -1,9 +1,27 @@
+## NEW
+
+```
+openssl rsa -in ~/.globus/userkey.pem -out ~/.globus/userkey_nopass.pem
+chmod 664 ~/.globus/userkey_nopass.pem
+
+# if not already installed and you have root + yum,
+curl -O http://linuxsoft.cern.ch/cern/slc6X/extras/x86_64/RPMS/cern-get-sso-cookie-0.6-1.slc6.noarch.rpm
+curl -O http://linuxsoft.cern.ch/cern/slc6X/extras/x86_64/RPMS/perl-WWW-CERNSSO-Auth-0.6-1.slc6.noarch.rpm
+curl -O http://linuxsoft.cern.ch/cern/slc6X/updates/x86_64/RPMS/CERN-CA-certs-20120322-8.slc6.noarch.rpm
+yum install *.rpm
+
+mkdir -p ~/private/
+cern-get-sso-cookie --cert ~/.globus/usercert.pem --key ~/.globus/userkey_nopass.pem \
+        -u https://information-technology.web.cern.ch/protected \
+        -o ~/private/ssocookie.txt
+```
 
 <a href="http://uaf-8.t2.ucsd.edu/~namin/dis"><img src="images/example.png"></a>
 
 ## Installation
 
 * Clone this repository into your `~/public_html/` directory. 
+
 
 ### Permissions
 * Make sure all python files have `chmod 755` (e.g., `chmod 755 handler.py`) including the directories they reside in. (`chmod 755 ../dis/`)
