@@ -45,8 +45,8 @@ class Fetcher(object):
             except cookielib.LoadError:
                 print "Cookie file {} couldn't be read. It will be (re)generated".format(self.cookie_file)
             domain = url.split("://",1)[1].split("/",1)[0]
-            is_cookie_valid = True
-            earliest_expiration = datetime.datetime.now()
+            is_cookie_valid = (len(self.cookies) > 0)
+            earliest_expiration = datetime.datetime.now() + datetime.timedelta(hours=999)
             for c in self.cookies:
                 # loop through cookies for this matching domain
                 if c.domain != domain: continue
@@ -65,11 +65,12 @@ class Fetcher(object):
                 return self.cookies
 
         # if there isn't a valid cookie in the file, we must run this cern command and reload the file
-        cmd = "cern-get-sso-cookie --cert {usercert} --key {userkey} -r -o {cookiefile} -u {url}".format(
+        cmd = "cern-get-sso-cookie --cert {usercert} --key {userkey} -r -o {cookiefile} -u {url} {extra}".format(
                 usercert = self.usercert,
                 userkey = self.userkey_passwordless,
                 cookiefile = self.cookie_file,
                 url = url,
+                extra = AUTH_PATHS["extra_args_sso"],
                 )
         print "Making cookie with cern-get-sso-cookie: {}".format(cmd)
         os.system(cmd)
@@ -534,17 +535,31 @@ if __name__ == "__main__":
     # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
     # pprint(PhedexApi(fetcher=f).get_dataset_replica_fractions("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"))
 
-    # pprint(MCMApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
-    # pprint(MCMApi(fetcher=f).get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
+    # # pprint(MCMApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
+    # # pprint(MCMApi(fetcher=f).get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
+    # print f.cookies
+    # # print f.get_sso_cookies(API_URLS["xsdb_url"])
+    # print f.cookie_expirations
+    # # pprint(XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
+    # _ = XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM")
+    # print _
+    # # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=True)
+    # # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=False)
+    # print f.cookie_expirations
+    # # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
+
+    f = Fetcher()
     print f.cookies
-    print f.get_sso_cookies(API_URLS["xsdb_url"])
-    print f.cookie_expirations
-    # pprint(XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
-    _ = XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM")
-    # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=True)
-    # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=False)
-    print f.cookie_expirations
-    # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
+    # api = XSDBApi(fetcher=f)
+    # out = api.get_samples("/TTJets*/*94X*/MINIAODSIM")
+    # print
+    # print(len(out["payload"]),5)
+    # print(float(out["payload"][0]["cross_section"]),50.)
+    api = PMPApi(fetcher=f)
+    print f.cookies
+    out = api.get_pmp_campaign_info("RunIIAutumn18FSPremix")
+    print f.cookies
+    print(len(out["payload"]["requests"]),10)
 
     # for c in f.cookies:
     #     print c.domain, c.is_expired(), datetime.datetime.fromtimestamp(c.expires)
