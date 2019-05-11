@@ -26,7 +26,7 @@ def pipe_grep(keys,data):
             d = {}
             if len(keys) >= 1:
                 for key in keys:
-                    out.append({ key:x.get(key,get_derived_quantity(x,key)) for key in keys })
+                    d = { key:x.get(key,get_derived_quantity(x,key)) for key in keys }
             # If it was just 1 key, then flatten it (remove the dict layer)
             if len(keys) == 1:
                 d = d.values()[0]
@@ -40,7 +40,7 @@ def pipe_grep(keys,data):
     else:
         return data
 
-def pipe_stats(keys,data):
+def pipe_stats(data):
     if type(data) == list:
         out = []
         for elem in data:
@@ -60,7 +60,7 @@ def pipe_stats(keys,data):
     else:
         return data
 
-def pipe_sort(keys,data):
+def pipe_sort(data):
     if type(data) == list:
         data = sorted(data)
     else:
@@ -80,7 +80,7 @@ def transform_output(payload, pipes):
         else:
             verb = parts[0]
         if verb == "grep":
-            payload = pipe_grep(payload)
+            payload = pipe_grep(keys,payload)
         elif verb == "stats":
             payload = pipe_stats(payload)
         elif verb == "sort":
