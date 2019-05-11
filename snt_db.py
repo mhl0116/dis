@@ -1,6 +1,6 @@
 import sqlite3
 
-class DBInterface():
+class SNTDBInterface():
     
     def __init__(self, fname="main.db"):
 
@@ -167,61 +167,3 @@ class DBInterface():
 
 if __name__=='__main__':
     pass
-
-    import db_tester
-    if db_tester.do_test():
-        print "Calculations correct"
-
-    # # Use CSV to make modifications
-    # db = DBInterface(fname="allsamples.db")
-    # db.export_to_csv("temp.csv")
-    # db.close()
-    # # # edit temp.csv to remove or modify properties, then comment out the above 3 lines and run the below 3 lines to load the csv into the .db file permanently
-    # # db = DBInterface(fname="allsamples.db")
-    # # db.load_from_csv("temp.csv")
-    # # db.close()
-
-    # # Delete all baby samples
-    # db = DBInterface(fname="allsamples.db")
-    # babies = db.fetch_samples_matching({"dataset_name":"*", "sample_type": "BABY"})
-    # print len(babies)
-    # # map(db.delete_sample, babies)
-    # db.close()
-
-    # # Delete samples which no longer exist in hadoop
-    # import os
-    # db = DBInterface(fname="allsamples.db")
-    # samples = db.fetch_samples_matching({"dataset_name":"*"})
-    # to_delete = []
-    # for s in samples:
-    #     loc = s["location"]
-    #     if not os.path.exists(loc):
-    #         to_delete.append(s)
-    # print len(to_delete)
-    # map(db.delete_sample, to_delete)
-    # db.close()
-
-    # # Copy all samples from allsamples.db to newsamples.db
-    # # If you remove samples and close the db like above, the file size is the same,
-    # # so I guess you have to do this dummy copying to "recompress" it?
-    # dborig = DBInterface(fname="allsamples.db")
-    # allsamples = dborig.fetch_samples_matching({"dataset_name":"*"})
-    # dborig.close()
-    # print len(allsamples)
-    # db = DBInterface(fname="newsamples.db")
-    # db.drop_table()
-    # db.make_table()
-    # for isamp,samp in enumerate(allsamples):
-    #     for k in samp:
-    #         if samp[k] == None: samp[k] = "" 
-    #     if isamp % 100 == 0: print isamp
-    #     db.update_sample(samp)
-    # db.close()
-
-    # db = DBInterface(fname="allsamples.db")
-    # tchi = db.fetch_samples_matching({"dataset_name":"/TChiNeu_mChi-300_mLSP-290_step1/namin-TChiNeu_mChi-300_mLSP-290_step2_miniAOD-eb69b0448a13fda070ca35fd76ab4e24/USER"})
-    # tchi = db.fetch_samples_matching({"dataset_name":"/TChi%/namin-TChi%/USER"})
-    # tchi = db.fetch_samples_matching({"dataset_name":"/GJets_HT-4*/*/*"})
-    # print tchi
-    # db.close()
-    

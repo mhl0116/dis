@@ -224,6 +224,21 @@ python -c 'from db import DBInterface; db = DBInterface(fname="allsamples.db"); 
 * (for pure bash, `sqlite3 -header -csv allsamples.db "select * from sample;" > out.csv`)
 * There are many examples of usage at the bottom of `db.py`, in `db_tester.py` and in the `snt`/`update_snt`/`delete_snt` sections of `api.py`.
 
+### Misc operational tips
+* If you want to move a published dataset to another folder, you should make DIS aware of this. The simplest query to update a location would be
+```python
+import dis_client as dc
+dsname="/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+cms3tag="CMS3_V08-00-16"
+location="/hadoop/cms/store/group/snt/my/fake/dir/"
+print(dc.query(
+    "sample_type=CMS3,dataset_name={dsname},cms3tag={cms3tag},location={location}".format(dsname=dsname,cms3tag=cms3tag,location=location),
+    typ="update_snt"
+)["response"]["payload"])
+```
+since you need a `sample_type`, `dataset_name`, and `cms3tag` to uniquely specify a sample, and then the rest is used to update the existing entry.
+Of course for new entries, you should specify a lot more.
+
 ### API Usage
 The primary purpose of this was to provide programmatic access to DBS, MCM, DAS, etc, so the `--json` option can be passed to any `dis_client.py` query to output a json. Even better, if it's on your path, you can import it directly from python and get a dictionary back as the response
 
