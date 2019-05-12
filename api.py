@@ -60,6 +60,8 @@ class Fetcher(object):
             # if the earliest expiration is still more than a couple of days in the future, then this must be bogus.
             if earliest_expiration - datetime.datetime.now() > datetime.timedelta(hours=48):
                 is_cookie_valid = False
+            if earliest_expiration - datetime.datetime.now() < datetime.timedelta(hours=15):
+                is_cookie_valid = False
             if is_cookie_valid:
                 self.cookie_expirations[url] = earliest_expiration
                 return self.cookies
@@ -507,46 +509,6 @@ def do_query(query, query_type, short=True):
 
 if __name__ == "__main__":
 
-    # print do_query("/TTTT_*,cms3tag=CMS4_V10*",query_type="snt")
-    # print do_query("/TTTT_*/*/MINIAODSIM",query_type="basic")
-    # ds = do_query("/TTTT_*/*/MINIAODSIM",query_type="basic")["payload"][0]
-    # print do_query(ds,query_type="mcm")
-    # print do_query(ds,query_type="parents")
-    # print do_query("{} | grep sizeGB | stats".format(ds),query_type="files")
-    # print do_query("/DYJets_*94X* | grep eff_lumi,scale1fb | sort | grep scale1fb | stats",query_type="snt")
-
-
-    # times = []
-    # for _ in range(100):
-    #     t0 = time.time()
-    #     js = SNTApi(db=sntdb).get_samples("/TTTT_*")
-    #     # pprint(js)
-    #     t1 = time.time()
-    #     print t1-t0
-    #     times.append(t1-t0)
-    #     sntdb.connection.commit()
-    #     # sntdb.close()
-    # print times
-    # print sum(times)/len(times)
-    # print sum(times[1:])/len(times[1:])
-
-    f = Fetcher()
-    # pprint(MCMApi(fetcher=f).get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
-    # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
-    # pprint(PhedexApi(fetcher=f).get_dataset_replica_fractions("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"))
-
-    # # pprint(MCMApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
-    # # pprint(MCMApi(fetcher=f).get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
-    # print f.cookies
-    # # print f.get_sso_cookies(API_URLS["xsdb_url"])
-    # print f.cookie_expirations
-    # # pprint(XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
-    # _ = XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM")
-    # print _
-    # # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=True)
-    # # print f.get_sso_cookies(API_URLS["pmp_url"], force_create=False)
-    # print f.cookie_expirations
-    # # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
 
     f = Fetcher()
     print f.cookies
@@ -555,38 +517,16 @@ if __name__ == "__main__":
     # print
     # print(len(out["payload"]),5)
     # print(float(out["payload"][0]["cross_section"]),50.)
-    api = PMPApi(fetcher=f)
+    # api = PMPApi(fetcher=f)
+    api = MCMApi(fetcher=f)
     print f.cookies
-    out = api.get_pmp_campaign_info("RunIIAutumn18FSPremix")
+    # out = api.get_from_x("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM",which="dataset",slim_json=False)
+    # print f.cookies
+    # # print(len(out["payload"]["requests"]),10)
+    # print(out["payload"]["member_of_chain"][-1])
+    # out = api.get_from_x("TOP-chain_RunIIFall18wmLHEGS_flowRunIIAutumn18DRPremix_flowRunIIAutumn18MiniAOD_flowRunIIAutumn18NanoAODv4-00057",which="chain")
+    out = api.get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM")
     print f.cookies
-    print(len(out["payload"]["requests"]),10)
-
-    # for c in f.cookies:
-    #     print c.domain, c.is_expired(), datetime.datetime.fromtimestamp(c.expires)
-        # if c.domain != domain: continue
-        # # if c.is_expired(): continue
-        # self.cookie_expirations[url] = datetime.datetime.fromtimestamp(c.expires)
-        # return self.cookies
-
-
-    # # print list(cookies)[-1].is_expired()
-    # # print dir(list(cookies)[-1])
-    # # last = list(cookies)[-1]
-    # # for d in dir(last):
-    # #     print d, getattr(last,d)
-    # # ['__doc__', '__init__', '__module__', '__repr__', '__str__', '_rest', 'comment', 'comment_url', 'discard', 'domain', 'domain_initial_dot', 'domain_specified', 'expires', 'get_nonstandard_attr', 'has_nonstandard_attr', 'is_expired', 'name', 'path', 'path_specified', 'port', 'port_specified', 'rfc2109', 'secure', 'set_nonstandard_attr', 'value', 'version']
-
-    # f = Fetcher()
-    # sntdb = DBInterface(fname="allsamples.db")
-    # pprint(SNTApi(db=sntdb).get_samples("/TTTT_*,cms3tag=CMS4_V10*"))
-    # pprint(DBSApi(fetcher=f).get_dataset_config("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
-    # pprint(DBSApi(fetcher=f).get_dataset_event_count("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD"))
-    # pprint(DBSApi(fetcher=f).get_dataset_parents("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"))
-    # pprint(DBSApi(fetcher=f).get_list_of_datasets("/SingleElectron/Run2016*-PromptReco-v1/MINIAOD"))
-    # pprint(MCMApi(fetcher=f).get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM"))
-    # pprint(MCMApi(fetcher=f).get_first_in_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"))
-    # pprint(MCMApi(fetcher=f).get_from_x("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM", which="dataset",include_driver=True,slim_json=True))
-    # pprint(PMPApi(fetcher=f).get_pmp_campaign_info("RunIIAutumn18FSPremix"))
-    # pprint(PhedexApi(fetcher=f).get_dataset_replica_fractions("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM"))
-    # pprint(XSDBApi(fetcher=f).get_samples("/TTJets*/*94X*/MINIAODSIM"))
+    # print(len(out["payload"]["requests"]),10)
+    print(out["payload"])
 
