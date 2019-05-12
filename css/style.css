@@ -1,5 +1,13 @@
-html {
-  overflow-y: scroll;
+.container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* padding-left: 10%; */
+    /* padding-right: 10%; */
+    /* margin-right: 10%; */
+}
+
+#query {
+    max-width: 70%;
 }
 
 .json {
@@ -25,31 +33,16 @@ html {
     border-color: #5755d9;
 }
 
-#query {
-    width: 100%;
-}
-
-.container {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    /* padding-left: 10%; */
-    /* padding-right: 10%; */
-    /* margin-right: 10%; */
+.title-highlight {
+    color: #5755d9;
 }
 
 #rocket{
     position: relative;
 }
 
-.form-select {
-    max-width: 100px;
-}
-
-.form-group {
-    margin-bottom: 0;
-}
-.inputs {
-    margin-bottom: 0.5rem;
+.mytitle {
+    font-size: 120%;
 }
 
 /* override pretty-json class to use spectre font instead of courier */
