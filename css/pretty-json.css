@@ -17,7 +17,7 @@
 }
 .node-content-wrapper ul li{
     list-style:none;
-    border-bottom:0; 
+    border-bottom:0;
     padding-bottom:0
 }
 .node-hgl-path{
@@ -41,10 +41,13 @@
 }
 
 .title{ color:#ccc;}
-.string{ color:#080;}
+.string{ color:#127b27;}
 /* .number{ color:#ccaa00;} */
-.number{ color:#ff5050;}
-.boolean{ color:#1979d3;}
-.date{ color:#aa6655;}
-.null{ color:#ff5050;}
+.number{ color:#1979d3;}
+.boolean{ color:#336ea9;}
+.key{ font-weight:bold;}
+.date{ color:#ff5050;}
+.null{ color:#1979d3;}
+
+
 /* eof leaf */
