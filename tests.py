@@ -73,7 +73,7 @@ class DBSApiTest(unittest.TestCase):
         self.assertLess(max(out["payload"]),275e3)
 
     def test_get_dataset_files(self):
-        out = self.api.get_dataset_files("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD")
+        out = self.api.get_dataset_files("/SingleElectron/Run2017B-PromptReco-v1/MINIAOD")
         files = out["payload"]
         self.assertGreater(len(files),30)
         self.assertTrue(files[0][0].startswith("/store/"))
