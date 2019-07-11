@@ -1,10 +1,14 @@
-from flask import Flask
-from flask import request, jsonify
 
+import os
+import sys
 import time
+import traceback
 
 import requests
 import requests_cache
+
+from flask import Flask
+from flask import request, jsonify
 
 app = Flask(__name__)
 
@@ -72,7 +76,17 @@ def main():
     query_type = request.args.get("type","basic")
     print request.args
     t0 = time.time()
-    js = do_query(query,query_type=query_type,short=short)
+    try:
+        js = do_query(query,query_type=query_type,short=short)
+    except:
+        js = dict(
+                urls=[],
+                request_times=[],
+                status="failed",
+                payload={
+                    "failure_reason": traceback.format_exc(),
+                    },
+                )
     t1 = time.time()
     duration = t1-t0
     print duration

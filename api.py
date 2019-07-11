@@ -201,7 +201,7 @@ class DBSApi(BaseApi):
         self.update_url_stack(r)
         js = r.json()
         self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
-        files = [[f["logical_file_name"], f["event_count"], f["file_size"]/1.0e9] for f in js[:max_files]]
+        files = [[f["logical_file_name"], f["event_count"], round(f["file_size"]/1.0e9,2)] for f in js[:max_files]]
         if to_dict:
             files = [dict(name=f[0],nevents=f[1],sizeGB=f[2]) for f in files]
         return self.make_response(
