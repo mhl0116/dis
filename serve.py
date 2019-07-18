@@ -45,11 +45,7 @@ def do_query(query, query_type, short=True):
             ret = PhedexApi(fetcher=f).get_file_replicas(entity)
         else:
             if short:
-                if "*" in entity:
-                    datasets = DBSApi(fetcher=f).get_list_of_datasets(entity, short=True)["payload"]
-                    ret = PhedexApi(fetcher=f).get_dataset_replica_fractions(datasets)
-                else:
-                    ret = PhedexApi(fetcher=f).get_dataset_replica_fractions(entity)
+                ret = PhedexApi(fetcher=f).get_dataset_replica_fractions(entity)
             else:
                 ret = PhedexApi(fetcher=f).get_file_replicas(entity,typ="dataset")
 
