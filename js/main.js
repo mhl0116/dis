@@ -173,13 +173,9 @@ $(function(){
         }, 1500);
     });
 
-    AJS.whenIType('/').execute(function() {
-        $("#query").focus().select();
-    });
-    AJS.whenIType('y').execute(function() {
-        getQueryURL();
-    });
-    AJS.whenIType('dbg').execute(function() {
+    AJS.whenIType('/').moveToAndFocus("#query");
+    AJS.whenIType('y').click("#aqueryurl");
+    AJS.whenIType('dbg').or("ddd").execute(function() {
         var myFlag = AJS.flag({
             type: 'info',
             body: "Turning debug "+(debugMode ? "OFF" : "ON"),
