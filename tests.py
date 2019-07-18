@@ -120,9 +120,19 @@ class PhedexApiTest(unittest.TestCase):
 
     def test_get_dataset_replica_fractions(self):
         out = self.api.get_dataset_replica_fractions("/MuonEG/Run2018C-17Sep2018-v1/MINIAOD")
-        site_fractions = out["payload"]["site_fractions"]
+        # there is only one dataset, so get the first element
+        site_fractions = out["payload"][0]["site_fractions"]
         sites = zip(*site_fractions)[0]
         self.assertTrue(all([s.startswith("T") for s in sites]))
+
+    def test_get_datasets_replica_fractions(self):
+        out = self.api.get_dataset_replica_fractions("/MuonEG/Run2018*-17Sep2018-v1/MINIAOD")
+        # there are multiple datasets
+        self.assertGreater(len(out["payload"]),1)
+        for info in out["payload"]:
+            site_fractions = info["site_fractions"]
+            sites = zip(*site_fractions)[0]
+            self.assertTrue(all([s.startswith("T") for s in sites]))
 
 class PMPApiTest(unittest.TestCase):
 
