@@ -1,5 +1,7 @@
 ## NEW
 
+#### FIXME, add pick events support
+
 ```
 openssl rsa -in ~/.globus/userkey.pem -out ~/.globus/userkey_nopass.pem
 chmod 664 ~/.globus/userkey_nopass.pem

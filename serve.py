@@ -73,6 +73,8 @@ def main():
     print request.args
     t0 = time.time()
     try:
+        if not len(query.strip()):
+            raise Exception("Empty query")
         js = do_query(query,query_type=query_type,short=short)
     except:
         js = dict(
