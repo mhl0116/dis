@@ -24,11 +24,11 @@ Or you can import dis_client and make a query using online syntax and get a json
        dis_client.query(q="..." [, typ="basic"] [, detail=False])
 """
 
-BASE_URL = "http://uaf-7.t2.ucsd.edu:50010/dis/serve"
+BASEURL = "http://uaf-7.t2.ucsd.edu:50010/dis/serve"
 
 def query(q, typ="basic", detail=False, timeout=999):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
-    url = '%s?%s' % (BASE_URL, urllib.urlencode(query_dict))
+    url = '%s?%s' % (BASEURL, urllib.urlencode(query_dict))
 
     data = {}
 

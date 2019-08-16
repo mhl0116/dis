@@ -15,7 +15,7 @@ if "uafino" in socket.gethostname():
             cacert = "/tmp/x509up_u8897",
             usercert = "/homes/namin/.globus/usercert.pem",
             userkey_passwordless = "/homes/namin/.globus/userkey_nopass.pem", # convert password key to passwordless with `openssl rsa -in ~/.globus/userkey.pem  -out ~/.globus/userkey_nopass.pem`
-            cookie_file = "/homes/namin/private/ssocookie.txt",
+            cookie_file = "/homes/namin/private/ssocookie.txt", # `mkdir -p private/` ; the cookie gest created automatically
             extra_args_sso = "--cacert /etc/pki/tls/certs/CERN-bundle.pem", # inject hacky cli stuff to cern-get-sso-cookie for uafino
             )
 else:
@@ -24,6 +24,6 @@ else:
             cacert = "/tmp/x509up_u31567",
             usercert = "/home/users/namin/.globus/usercert.pem",
             userkey_passwordless = "/home/users/namin/.globus/userkey_nopass.pem", # convert password key to passwordless with `openssl rsa -in ~/.globus/userkey.pem  -out ~/.globus/userkey_nopass.pem`
-            cookie_file = "/home/users/namin/private/ssocookie.txt",
+            cookie_file = "/home/users/namin/private/ssocookie.txt", # `mkdir -p private/` ; the cookie gest created automatically
             extra_args_sso = "",
             )

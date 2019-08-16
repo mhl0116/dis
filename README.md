@@ -1,50 +1,19 @@
-## NEW
+### TODO
+* add pick events support
 
-#### FIXME, add pick events support
-
-```
-openssl rsa -in ~/.globus/userkey.pem -out ~/.globus/userkey_nopass.pem
-chmod 664 ~/.globus/userkey_nopass.pem
-
-# if not already installed and you have root + yum,
-curl -O http://linuxsoft.cern.ch/cern/slc6X/extras/x86_64/RPMS/cern-get-sso-cookie-0.6-1.slc6.noarch.rpm
-curl -O http://linuxsoft.cern.ch/cern/slc6X/extras/x86_64/RPMS/perl-WWW-CERNSSO-Auth-0.6-1.slc6.noarch.rpm
-curl -O http://linuxsoft.cern.ch/cern/slc6X/updates/x86_64/RPMS/CERN-CA-certs-20120322-8.slc6.noarch.rpm
-yum install *.rpm
-
-mkdir -p ~/private/
-cern-get-sso-cookie --cert ~/.globus/usercert.pem --key ~/.globus/userkey_nopass.pem \
-        -u https://information-technology.web.cern.ch/protected \
-        -o ~/private/ssocookie.txt
-```
-
-<a href="http://uaf-8.t2.ucsd.edu/~namin/dis"><img src="images/example.png"></a>
+<a href="http://uaf-8.t2.ucsd.edu/~namin/dis2"><img src="images/example.png"></a>
 
 ## Installation
 
 * Clone this repository into your `~/public_html/` directory. 
-
-
-### Permissions
-* Make sure all python files have `chmod 755` (e.g., `chmod 755 handler.py`) including the directories they reside in. (`chmod 755 ../dis/`)
-* Make sure your `~/public_html/.htaccess` file has the following content
-```
-AddHandler cgi-script .cgi .py
-Options +ExecCGI
-```
-* Continue with the next sections
-
-### Initial test
-* Make a fresh proxy and copy the file to the same directory: `cp /tmp/x509up_u$(id -u) .`
-* Visit the corresponding URL for `index.html` in the browser and verify that it loads.
-* Edit the URL near the top of `dis_client.py` to match the web location and run `./dis_client.py --test -` to run some unit tests for the various query types.
-* Run `python db.py` to test the sqlite interface. If all goes well, you should see a tacky `Calculations correct` message (just like in The Martian).
-* Copy the appropriate `allsamples.db` if you want to populate the database with previous samples.
-* Follow the crontab/proxy instructions in the next section, and that's it.
+* Get a valid proxy. I recommend making this auto-renewing (see section below).
+* Edit usernames appropriately in `config.py`. And make a passwordless key as indicated in the comments.
+* Edit the port in `serve.py` if needed and then run `./start.sh` to start the flask backend
+* Depending on which uaf and port the backend is running on, edit the `BASEURL` in `dis_client.py` and `js/main.js`.
 
 ### Crontab/auto-renewing proxy
 
-* Follow instructions from this [Twiki](http://www.t2.ucsd.edu/tastwiki/bin/view/CMS/LongLivedProxy) to create an auto-renewing proxy. Very handy.
+* Follow instructions from this [Twiki](http://www.t2.ucsd.edu/tastwiki/bin/view/CMS/LongLivedProxy) to create a handy auto-renewing proxy.
 
 * As `dis` uses a user proxy to make queries, you need to make sure there's always a fresh one at your disposal. Put the below lines into your crontab (`crontab -e`)
 ```bash
@@ -53,17 +22,29 @@ Options +ExecCGI
 ```
 Note that the first entry should correspond to the long-lived proxy setup.
 
+
+## Testing
+
+Unit tests can be run in the same environment used in `start.sh`:
+```
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9; 
+cmsenv; 
+cd -; 
+python tests.py
+python dis_client.py -e -
+```
+This will run unit tests on the backend (`tests.py`) and on the client (`dis_client.py`).
+
 ## Usage instructions and examples
 
 A query has 3 parts: the query string, the query type, and the boolean "short" option (which governs the level of detail that is returned by the API).
-
 
 ### General notes
 
 * Wildcards are accepted (`*`) for most queries where you'd want to use wildcards. Just try it.
 * `dis_client.py` syntax will be used here, but of course they have obvious mappings to use them on the website 
 * I recommend putting `dis_client.py` on your PATH (and PYTHONPATH) somewhere.
-
 
 ### Query types
 
@@ -120,14 +101,14 @@ dis_client.py -t mcm "/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
 
 * To get MCM information for the actual dataset you feed in, tack on the `,this` modifier
 
-#### driver
+#### chain
 
 `
-dis_client.py -t driver /GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM
+dis_client.py -t chain /GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM
 `
 
-* Same story as above (finds the cmsDriver commands for the highest parent, unless you give it the `,this` modifier)
-
+* This recurses through the chained request for the sample and prints out all driver commands/fragments. It's useful if you want to go
+from GENSIM to MINIAODSIM without clicking 30 times in the MCM interface to get the necessary driver commands.
 
 #### parents
 
@@ -136,15 +117,6 @@ dis_client.py -t parents /GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythi
 `
 
 * Returns a list of datasets found as we recurse up the tree of parenthood
-
-
-#### lhe
-
-`
-dis_client.py -t lhe /GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM
-`
-
-* Returns a list of LHE files for this dataset (only a few are returned unless `--detail` is asked for, in the same way as the files query type)
 
 
 #### snt
@@ -156,16 +128,6 @@ dis_client.py -t snt "/GJets_HT-*_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISp
 * Much like the other database queries, this just uses the SNT datasets (returns information about ntupled nevents, cross-section, kfactor, hadoop location, etc.)
 * The `--detail` option just provides more details like the filter type, twiki name, who the sample was assigned to, etc.
 
-
-#### dbs
-
-`
-dis_client.py -t dbs "https://cmsweb.cern.ch/dbs/prod/global/DBSReader/files?dataset=/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM&detail=1&lumi_list=[134007]&run_num=1"
-`
-
-* For development use, or other cases not covered here, you can feed in a direct URL for a DBS query.
-
-
 #### runs
 
 `
@@ -175,24 +137,6 @@ dis_client.py -t runs "/SinglePhoton/Run2016E-PromptReco-v2/MINIAOD"
 * Returns a list of runs contained within the dataset
 * Hint: try `dis_client.py -t runs "/SinglePhoton/Run2016E-PromptReco-v2/MINIAOD | stats"` to see the first, last, and number of runs.
 
-
-#### pick
-
-`
-dis_client.py -t pick "/MET/Run2016D-PromptReco-v2/MINIAOD,276524:9999:2340928340,276525:2892:550862893,276525:2893:823485588,276318:300:234982340,276318:200:234982340"
-`
-
-* This is a parallelized edmPickEvents which returns the files containing the specified events
-
-
-#### pick\_cms4
-
-`
-dis_client.py -t pick_cms4 "/MET/Run2016D-PromptReco-v2/MINIAOD,276524:9999:2340928340,276525:2892:4845251498,276525:2893:823485588,276318:300:234982340,276318:200:234982340"
-`
-
-* This is a pickEvents implementation for CMS4 data which returns the merged files containing the specified events
-
 #### sites
 
 `
@@ -200,7 +144,6 @@ dis_client.py -t sites "/MET/Run2016D-PromptReco-v2/MINIAOD"
 `
 
 * Gives phedex information about a dataset or even a `/store/` file, including the replication sites.
-
 
 
 ### Selectors/modifiers, greppers, and all that
@@ -254,7 +197,7 @@ location="/hadoop/cms/store/group/snt/my/fake/dir/"
 print(dc.query(
     "sample_type=CMS3,dataset_name={dsname},cms3tag={cms3tag},location={location}".format(dsname=dsname,cms3tag=cms3tag,location=location),
     typ="update_snt"
-)["response"]["payload"])
+)["payload"])
 ```
 since you need a `sample_type`, `dataset_name`, and `cms3tag` to uniquely specify a sample, and then the rest is used to update the existing entry.
 Of course for new entries, you should specify a lot more.
@@ -265,7 +208,6 @@ The primary purpose of this was to provide programmatic access to DBS, MCM, DAS,
 ```python
 import dis_client
 response =  dis_client.query(q="..." [, typ="basic"] [, detail=False])
-data = response["response"]["payload"]
+data = response["payload"]
 print response
-print data
 ```
