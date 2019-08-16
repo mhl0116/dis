@@ -25,6 +25,7 @@ def do_query(query, query_type, short=True):
 
     entity, selectors, pipes = transform_input(query)
 
+    ret = {}
     if query_type == "snt": ret = SNTApi(db=sntdb).get_samples(entity, selectors, short)
 
     elif query_type == "basic":
@@ -36,8 +37,8 @@ def do_query(query, query_type, short=True):
     elif query_type == "mcm": ret = MCMApi(fetcher=f).get_driver_chain_from_dataset(entity, first_only=True)
     elif query_type == "parents": ret = DBSApi(fetcher=f).get_dataset_parents(entity)
     elif query_type == "chain": ret = MCMApi(fetcher=f).get_driver_chain_from_dataset(entity, first_only=False)
-    elif query_type == "update_snt": ret = SNTApi(db=sntdb).update_sample(entity,selectors)
-    elif query_type == "delete_snt": ret = SNTApi(db=sntdb).delete_sample(entity,selectors)
+    elif query_type == "update_snt": ret = SNTApi(db=sntdb).update_sample(query)
+    elif query_type == "delete_snt": ret = SNTApi(db=sntdb).delete_sample(query)
     elif query_type == "dbs": ret = DBSApi(fetcher=f).get_arbitrary_url(entity)
     elif query_type == "xsdb": ret = XSDBApi(fetcher=f).get_samples(entity)
     elif query_type == "sites":
@@ -66,11 +67,9 @@ def add_headers(response):
 
 @app.route('/dis/serve', methods=["GET"])
 def main():
-    print "---> Running main"
     query = request.args.get("query")
     short = request.args.get("short",True)
     query_type = request.args.get("type","basic")
-    print request.args
     t0 = time.time()
     try:
         if not len(query.strip()):
@@ -87,7 +86,6 @@ def main():
                 )
     t1 = time.time()
     duration = t1-t0
-    print duration
     return jsonify(js)
 
 @app.route('/dis/clearcache')

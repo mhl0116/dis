@@ -1,5 +1,3 @@
-cookielib
 requests
 requests_cache
-sqlite3
 flask

@@ -21,7 +21,7 @@ if "uafino" in socket.gethostname():
 else:
     AUTH_PATHS = dict(
             capath = "/etc/grid-security/certificates/",
-            cacert = "/tmp/x509up_31567",
+            cacert = "/tmp/x509up_u31567",
             usercert = "/home/users/namin/.globus/usercert.pem",
             userkey_passwordless = "/home/users/namin/.globus/userkey_nopass.pem", # convert password key to passwordless with `openssl rsa -in ~/.globus/userkey.pem  -out ~/.globus/userkey_nopass.pem`
             cookie_file = "/home/users/namin/private/ssocookie.txt",

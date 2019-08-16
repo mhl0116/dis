@@ -67,28 +67,28 @@ class DBSApiTest(unittest.TestCase):
         self.assertGreater(sum(nfiles),1000)
 
     def test_get_dataset_runs(self):
-        out = self.api.get_dataset_runs("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD")
-        self.assertGreater(len(out["payload"]),40)
-        self.assertGreater(min(out["payload"]),270e3)
-        self.assertLess(max(out["payload"]),275e3)
+        out = self.api.get_dataset_runs("/SingleElectron/Run2017B-Nano1June2019-v1/NANOAOD")
+        self.assertGreater(len(out["payload"]),100)
+        self.assertGreater(min(out["payload"]),290e3)
+        self.assertLess(max(out["payload"]),300e3)
 
     def test_get_dataset_files(self):
-        out = self.api.get_dataset_files("/SingleElectron/Run2017B-PromptReco-v1/MINIAOD")
+        out = self.api.get_dataset_files("/SingleElectron/Run2017B-Nano1June2019-v1/NANOAOD")
         files = out["payload"]
         self.assertGreater(len(files),30)
         self.assertTrue(files[0][0].startswith("/store/"))
         self.assertGreater(files[0][2],0.0)
 
-        out = self.api.get_dataset_files("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD",max_files=10)
+        out = self.api.get_dataset_files("/SingleElectron/Run2017B-Nano1June2019-v1/NANOAOD",max_files=10)
         files = out["payload"]
         self.assertEqual(len(files),10)
 
-        out = self.api.get_dataset_files("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD",to_dict=True)
+        out = self.api.get_dataset_files("/SingleElectron/Run2017B-Nano1June2019-v1/NANOAOD",to_dict=True)
         files = out["payload"]
         self.assertItemsEqual(files[0].keys(),["name","nevents","sizeGB"])
 
     def test_get_arbitrary_url(self):
-        out1 = self.api.get_dataset_event_count("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD")
+        out1 = self.api.get_dataset_event_count("/SingleElectron/Run2017B-Nano1June2019-v1/NANOAOD")
         url1 = out1["urls"][0]
         out2 = self.api.get_arbitrary_url(url1)
         self.assertEqual(out1["payload"]["nfiles"],out2["payload"][0]["num_file"])

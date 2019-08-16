@@ -422,23 +422,23 @@ class SNTApi(BaseApi):
 
         return self.make_response(data=samples)
 
-    def update_sample(self, entity):
+    def update_sample(self, query):
         s = {}
-        for keyval in entity.split(","):
+        for keyval in query.split(","):
             key,val = keyval.strip().split("=")
             s[key] = val
         did_update = self.db.update_sample(s)
         s["updated"] = did_update
-        self.make_response(self,data=s,status=("success" if did_update else "fail"))
+        return self.make_response(data=s,status=("success" if did_update else "fail"))
 
-    def delete_sample(self, entity):
+    def delete_sample(self, query):
         s = {}
-        for keyval in entity.split(","):
+        for keyval in query.split(","):
             key,val = keyval.strip().split("=")
             s[key] = val
         did_delete = self.db.delete_sample(s)
         s["deleted"] = did_delete
-        self.make_response(self,data=s,status=("success" if did_delete else "fail"))
+        return self.make_response(data=s,status=("success" if did_delete else "fail"))
 
 class XSDBApi(BaseApi):
 
