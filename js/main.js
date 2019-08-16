@@ -1,5 +1,6 @@
 var timer;
 var debugMode = false;
+var BASEURL = "http://uaf-7.t2.ucsd.edu:50010";
 
 function isDict(v) {
     return (typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date));
@@ -74,7 +75,7 @@ function doSubmit(data) {
     $("#query").siblings("i").addClass("loading");
     t0 = new Date().getTime();
     console.log(data);
-    $.get("http://uafino.physics.ucsb.edu:50010/dis/serve", data)
+    $.get(BASEURL+"/dis/serve", data)
         .done(function(response) {})
         .always(handleResponse);
 }
@@ -185,7 +186,7 @@ $(function(){
         console.log(debugMode);
     });
     AJS.whenIType('ccc').execute(function() {
-        $.get("http://uafino.physics.ucsb.edu:50010/dis/clearcache")
+        $.get(BASEURL+"/dis/clearcache")
             .always(function(response) {
                 console.log(response);
                 var myFlag = AJS.flag({
