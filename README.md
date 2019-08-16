@@ -15,12 +15,11 @@
 
 * Follow instructions from this [Twiki](http://www.t2.ucsd.edu/tastwiki/bin/view/CMS/LongLivedProxy) to create a handy auto-renewing proxy.
 
-* As `dis` uses a user proxy to make queries, you need to make sure there's always a fresh one at your disposal. Put the below lines into your crontab (`crontab -e`)
+* As `dis` uses a user proxy to make queries, you need to make sure there's always a fresh one at your disposal. Put this into your crontab (`crontab -e`)
 ```bash
 * 55 15 * * * /home/users/${USER}/cron/renewProxy.sh >/dev/null 2>&1
-* 58 15 * * * cp /tmp/x509up_u$(id -u) /home/users/${USER}/public_html/dis/
 ```
-Note that the first entry should correspond to the long-lived proxy setup.
+This should correspond to the long-lived proxy setup.
 
 
 ## Testing
