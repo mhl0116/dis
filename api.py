@@ -155,7 +155,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url,params=params)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
         j = js[0]
         return self.make_response(
                 data=dict(
@@ -172,7 +172,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url,params=params)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
         return self.make_response(
                 data=js[0]["run_num"],
                 )
@@ -183,7 +183,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url,params=params)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
         info = js[0]
         if "creation_date" in info:
             info["creation_date"] = str(datetime.datetime.fromtimestamp(info["creation_date"]))
@@ -201,7 +201,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url,params=params)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
         files = [[f["logical_file_name"], f["event_count"], round(f["file_size"]/1.0e9,2)] for f in js[:max_files]]
         if to_dict:
             files = [dict(name=f[0],nevents=f[1],sizeGB=f[2]) for f in files]
@@ -228,7 +228,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url,params=params)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
 
         datasets = []
         if short:
@@ -254,7 +254,7 @@ class DBSApi(BaseApi):
             r = self.fetcher.get_request(url,params=params)
             self.update_url_stack(r)
             js = r.json()
-            self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+            self.maybe_raise_exception(r,"DBS",lambda:js["message"])
             if not js: return None
             return js[0].get("parent_dataset")
         parents = []
@@ -271,7 +271,7 @@ class DBSApi(BaseApi):
         r = self.fetcher.get_request(url)
         self.update_url_stack(r)
         js = r.json()
-        self.maybe_raise_exception(r,"DBS",lambda x:js["message"])
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
         return self.make_response(data=js)
 
 class PhedexApi(BaseApi):
