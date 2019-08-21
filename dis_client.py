@@ -1,10 +1,20 @@
 #!/usr/bin/env python
 
-import urllib, urllib2, json
+from __future__ import print_function
+
+import json
+try:
+    from urllib2 import urlopen
+    from urllib import urlencode
+except:
+    # python3 compatibility
+    from urllib.request import urlopen
+    from urllib.parse import urlencode
 import sys
 import argparse
 import socket
 import time
+import glob
 
 """
 examples:
@@ -28,18 +38,19 @@ BASEURL = "http://uaf-7.t2.ucsd.edu:50010/dis/serve"
 
 def query(q, typ="basic", detail=False, timeout=999):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
-    url = '%s?%s' % (BASEURL, urllib.urlencode(query_dict))
+    url = '%s?%s' % (BASEURL, urlencode(query_dict))
 
     data = {}
 
     try:
-        content =  urllib2.urlopen(url,timeout=timeout).read()
+        content =  urlopen(url,timeout=timeout).read()
         data = json.loads(content)
-    except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
+    except: 
+        print("Failed to perform URL fetching and decoding!")
 
     return data
 
-def listofdicts_to_table(lod):
+def listofdicts_to_table(lod): # pragma: no cover
     colnames = list(set(sum([thing.keys() for thing in lod],[])))
 
     # key is col name and value is maximum length of any entry in that column
@@ -84,7 +95,7 @@ def listofdicts_to_table(lod):
         return buff
 
 
-def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False):
+def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False, one=False): # pragma:no cover
     buff = ""
     data = query(q, typ, detail)
 
@@ -121,12 +132,15 @@ def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_tabl
         for ikey,key in enumerate(data):
             buff += "%s: %s\n\n" % (key, data[key])
 
+    if typ=="snt" and len(data) and one:
+        onefile = glob.glob("{}/*.root".format(data[0]["location"]))[0]
+        return onefile
 
     # ignore whitespace at end
     buff = buff.rstrip()
     return buff
 
-def test():
+def test(): # pragma: no cover
 
     queries = [
 
@@ -154,7 +168,7 @@ def test():
     import os
     columns = int(os.popen('stty size', 'r').read().split()[1])-20
 
-    print ">>> Testing queries"
+    print(">>> Testing queries")
     for q_params in queries:
         detail = q_params.get("short","") != "short"
         to_print = "{0}: {1}{2}".format(q_params["type"], q_params["query"], " (detailed)" if detail else "")
@@ -168,9 +182,9 @@ def test():
         t1 = time.time()
         status = data["status"]
         startcolor = green if status == "success" else red
-        print "[{0}{1}{2} ({3:.2f}s)] {4}".format(startcolor,status,clear,t1-t0,to_print)
+        print("[{0}{1}{2} ({3:.2f}s)] {4}".format(startcolor,status,clear,t1-t0,to_print))
         if status != "success":
-            print data["payload"]["failure_reason"]
+            print(data["payload"]["failure_reason"])
 
 if __name__ == '__main__':
 
@@ -182,6 +196,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--table", help="show output as pretty table", action="store_true")
     parser.add_argument("-v", "--dev", help="use developer instance", action="store_true")
     parser.add_argument("-e", "--test", help="perform query tests", action="store_true")
+    parser.add_argument("-o", "--one", help="get one file from SNT sample", action="store_true")
     args = parser.parse_args()
 
     if not args.type: args.type = "basic"
@@ -189,5 +204,5 @@ if __name__ == '__main__':
     if args.test:
         test()
     else:
-        print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table)
+        print(get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table, one=args.one))
 
