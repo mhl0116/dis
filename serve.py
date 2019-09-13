@@ -68,7 +68,7 @@ def add_headers(response):
 @app.route('/dis/serve', methods=["GET"])
 def main():
     query = request.args.get("query")
-    short = request.args.get("short",True)
+    short = bool(request.args.get("short",False))
     query_type = request.args.get("type","basic")
     t0 = time.time()
     try:
