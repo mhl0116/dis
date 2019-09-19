@@ -15,7 +15,7 @@ app = Flask(__name__)
 from snt_db import SNTDBInterface
 from api import Fetcher, \
         DBSApi, PhedexApi, MCMApi, \
-        SNTApi, PMPApi, XSDBApi
+        SNTApi, PMPApi, XSDBApi, ReqMgrApi
 from utils import transform_output, transform_input, enable_requests_caching
 
 enable_requests_caching("maincache",expire_after=3000)
@@ -41,6 +41,7 @@ def do_query(query, query_type, short=True):
     elif query_type == "delete_snt": ret = SNTApi(db=sntdb).delete_sample(query)
     elif query_type == "dbs": ret = DBSApi(fetcher=f).get_arbitrary_url(entity)
     elif query_type == "xsdb": ret = XSDBApi(fetcher=f).get_samples(entity)
+    elif query_type == "psets": ret = ReqMgrApi(fetcher=f).get_info(entity)
     elif query_type == "sites":
         if "/store/" in entity:
             ret = PhedexApi(fetcher=f).get_file_replicas(entity)

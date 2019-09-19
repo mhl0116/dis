@@ -454,6 +454,32 @@ class XSDBApi(BaseApi):
         self.maybe_raise_exception(r,"XSDB")
         return self.make_response(data=js)
 
+class ReqMgrApi(BaseApi):
+
+    def get_info(self,dataset):
+        url = "https://cmsweb.cern.ch/reqmgr2/data/request"
+        params = dict(outputdataset=dataset)
+        r = self.fetcher.get_request(url,params=params)
+        self.update_url_stack(r)
+        js = r.json()
+        self.maybe_raise_exception(r,"ReqMgr",lambda:js["message"])
+        items = js["result"][0].items()
+        items = sorted(items,key=lambda x:x[0].rsplit("_",3)[1:])
+        firsttask = items[0][1]
+        ntasks = firsttask["TaskChain"]
+        tasks = []
+        for i in range(1,ntasks+1):
+            task = firsttask["Task{}".format(i)]
+            task[u"Pset"] = "https://cmsweb.cern.ch/couchdb/reqmgr_config_cache/{}/configFile".format(task["ConfigCacheID"])
+            for k in ["TaskName","SplittingAlgo","ConfigCacheID","Multicore","Memory","InputTask","InputFromOutputModule",
+                    "KeepOutput","AcquisitionEra"
+                    ]:
+                task.pop(k,None)
+            tasks.append(task)
+        return self.make_response(
+                data=tasks
+                )
+
 if __name__ == "__main__":
 
 
