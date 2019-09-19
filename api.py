@@ -81,7 +81,7 @@ class Fetcher(object):
         # actually, we would want to load the file first, find the relevant cookie, and get the proper
         # expiration date. BUT we already know that cern SSO cookies expire after 12 hours, so don't
         # waste time on a loop
-        self.cookie_expirations[url] = datetime.datetime.now()+datetime.timedelta(hours=12)
+        self.cookie_expirations[url] = datetime.datetime.now()+datetime.timedelta(hours=6)
         self.cookies = cookielib.MozillaCookieJar()
         self.cookies.load(self.cookie_file, ignore_discard=True, ignore_expires=True)
         return self.cookies

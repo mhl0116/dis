@@ -196,6 +196,17 @@ $(function(){
                 });
             });
     });
+    AJS.whenIType('ppp').execute(function() {
+        $.get(BASEURL+"/dis/deleteproxy")
+            .always(function(response) {
+                console.log(response);
+                var myFlag = AJS.flag({
+                    type: 'info',
+                    body: "Deleting SSO proxy/cookie: "+JSON.stringify(response),
+                    close: 'auto'
+                });
+            });
+    });
 
 });
 
