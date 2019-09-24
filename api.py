@@ -456,7 +456,7 @@ class XSDBApi(BaseApi):
 
 class ReqMgrApi(BaseApi):
 
-    def get_info(self,dataset):
+    def get_info(self,dataset,short=True):
         url = "https://cmsweb.cern.ch/reqmgr2/data/request"
         params = dict(outputdataset=dataset)
         r = self.fetcher.get_request(url,params=params)
@@ -466,16 +466,35 @@ class ReqMgrApi(BaseApi):
         items = js["result"][0].items()
         items = sorted(items,key=lambda x:x[0].rsplit("_",3)[1:])
         firsttask = items[0][1]
-        ntasks = firsttask["TaskChain"]
+        ntasks = firsttask.get("TaskChain")
         tasks = []
-        for i in range(1,ntasks+1):
-            task = firsttask["Task{}".format(i)]
-            task[u"Pset"] = "https://cmsweb.cern.ch/couchdb/reqmgr_config_cache/{}/configFile".format(task["ConfigCacheID"])
-            for k in ["TaskName","SplittingAlgo","ConfigCacheID","Multicore","Memory","InputTask","InputFromOutputModule",
-                    "KeepOutput","AcquisitionEra"
-                    ]:
-                task.pop(k,None)
-            tasks.append(task)
+        if ntasks is None:
+            d = {}
+            if short:
+                for k in ["PrepID","GlobalTag","SizePerEvent","TotalInputEvents","ScramArch","TimePerEvent","CMSSWVersion"]:
+                    d[k] = firsttask[k]
+            else:
+                d = firsttask
+            d["Pset"] = "https://cmsweb.cern.ch/couchdb/reqmgr_config_cache/{}/configFile".format(firsttask["ConfigCacheID"])
+            tasks.append(d)
+        else:
+            for i in range(1,ntasks+1):
+                task = firsttask["Task{}".format(i)]
+                task["Pset"] = "https://cmsweb.cern.ch/couchdb/reqmgr_config_cache/{}/configFile".format(task["ConfigCacheID"])
+                if short:
+                    for k in [
+                            "TaskName",
+                            "SplittingAlgo",
+                            "ConfigCacheID",
+                            "Multicore",
+                            "Memory",
+                            "InputTask",
+                            "InputFromOutputModule",
+                            "KeepOutput",
+                            "AcquisitionEra",
+                            ]:
+                        task.pop(k,None)
+                tasks.append(task)
         return self.make_response(
                 data=tasks
                 )
