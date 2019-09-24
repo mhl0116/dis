@@ -239,7 +239,23 @@ PrettyJSON.view.Leaf = Backbone.View.extend({
             state.data = 'null';
         }
         if (state.type == 'string') {
-            state.data = (state.data == '') ? '""' : '"' + state.data + '"';
+            if (state.data.startsWith("http")) {
+                state.data = (state.data == '') ? '""' : (
+                    '"<a href="' + state.data + '">' + state.data + '</a>"'
+                );
+            } else if (state.data.startsWith("/hadoop")) {
+                state.data = (state.data == '') ? '""' : (
+                    '"<a href="http://proxy-1.t2.ucsd.edu:50070/webhdfs/v1/' 
+                    + state.data.replace("/hadoop","")
+                    + '?op=LISTSTATUS">' + state.data + '</a>"'
+                );
+            } else if (state.data.startsWith("/")) {
+                state.data = (state.data == '') ? '""' : (
+                    '<span class="canfill">"' + state.data + '"</span>'
+                );
+            } else {
+                state.data = (state.data == '') ? '""' : '"' + state.data + '"';
+            }
         }
         this.tpl = _.template(PrettyJSON.tpl.Leaf);
         $(this.el).html(this.tpl(state));

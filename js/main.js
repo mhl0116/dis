@@ -50,7 +50,7 @@ function handleResponse(response) {
     AJS.$('#submit_button').each(function() {
         this.idle();
     });
-    $(".string").mousedown(
+    $(".canfill").mousedown(
         function(e) {
             // middle mouse button
             if(e.which == 2) {
