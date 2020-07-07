@@ -31,7 +31,7 @@ def do_query(query, query_type, short=True):
     elif query_type == "basic":
         if "*" in entity: ret = DBSApi(fetcher=f).get_list_of_datasets(entity, short=short, selectors=selectors)
         else: ret = DBSApi(fetcher=f).get_dataset_event_count(entity)
-    elif query_type == "files": ret = DBSApi(fetcher=f).get_dataset_files(entity, selectors=selectors, max_files=(10 if short else None), to_dict=True)
+    elif query_type == "files": ret = DBSApi(fetcher=f).get_dataset_files(entity, selectors=selectors, max_files=(None if short else None), to_dict=True)
     elif query_type == "runs": ret = DBSApi(fetcher=f).get_dataset_runs(entity)
     elif query_type == "config": ret = DBSApi(fetcher=f).get_dataset_config(entity)
     elif query_type == "mcm": ret = MCMApi(fetcher=f).get_driver_chain_from_dataset(entity, first_only=True)
