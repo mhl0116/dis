@@ -166,6 +166,24 @@ class DBSApi(BaseApi):
                     )
                 )
 
+    def get_single_file_info(self,filename):
+        url = "{}/files".format(API_URLS["dbs_global_url"])
+        params = dict(logical_file_name=filename, detail=1)
+        r = self.fetcher.get_request(url,params=params)
+        self.update_url_stack(r)
+        js = r.json()
+        self.maybe_raise_exception(r,"DBS",lambda:js["message"])
+        j = js[0]
+        return self.make_response(
+                data=dict(
+                    name=j["logical_file_name"],
+                    nevents=j["event_count"],
+                    dataset=j["dataset"],
+                    filesizeGB=round(j["file_size"]/1.e9,2),
+                    )
+                )
+
+
     def get_dataset_runs(self,dataset):
         url = "{}/runs".format(API_URLS["dbs_user_url"] if dataset.endswith("/USER") else API_URLS["dbs_global_url"])
         params = dict(dataset=dataset)

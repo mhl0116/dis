@@ -40,6 +40,10 @@ class DBSApiTest(unittest.TestCase):
         self.assertEqual(out["payload"]["release_version"], "CMSSW_10_2_5")
         self.assertEqual(out["payload"]["global_tag"], "102X_upgrade2018_realistic_v15")
 
+    def test_get_single_file_info(self):
+        out = self.api.get_single_file_info("/store/data/Run2018B/EGamma/MINIAOD/17Sep2018-v1/270000/6E852B0D-061A-7F4B-A0C7-BEFFBFE7118C.root")
+        self.assertEqual(out["payload"]["nevents"], 62611)
+
     def test_get_dataset_event_count(self):
         out = self.api.get_dataset_event_count("/SingleElectron/Run2016B-PromptReco-v1/MINIAOD")
         self.assertGreater(out["payload"]["nevents"], 1e6)
