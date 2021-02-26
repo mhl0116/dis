@@ -63,8 +63,7 @@ def pipe_stats(data):
 def pipe_sort(data):
     if type(data) == list:
         data = sorted(data)
-    else:
-        return data
+    return data
 
 def transform_output(payload, pipes):
     # transform output according to piped commands ("verbs")
