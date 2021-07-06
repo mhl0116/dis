@@ -342,8 +342,8 @@ class MCMApi(BaseApi):
             url = "{}/requests/get/{}".format(API_URLS["mcm_public_url"],thing)
         r = self.fetcher.get_request(url)
         self.update_url_stack(r)
-        js = r.json()
         self.maybe_raise_exception(r,"McM")
+        js = r.json()
         if include_driver:
             js["results"]["driver"] = self.get_setup_from_request(js["results"]["_id"])["payload"]
         js = js["results"]
@@ -363,8 +363,8 @@ class MCMApi(BaseApi):
         url = "{}/requests/get_setup/{}".format(API_URLS["mcm_public_url"],request)
         r = self.fetcher.get_request(url)
         self.update_url_stack(r)
-        ret = r.content
         self.maybe_raise_exception(r,"McM")
+        ret = r.content
         return self.make_response(data=ret)
 
     def get_driver_chain_from_dataset(self,dataset, first_only=True):
