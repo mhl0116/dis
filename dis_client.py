@@ -34,7 +34,8 @@ Or you can import dis_client and make a query using online syntax and get a json
        dis_client.query(q="..." [, typ="basic"] [, detail=False])
 """
 
-BASEURL = "http://uaf-7.t2.ucsd.edu:50010/dis/serve"
+#BASEURL = "http://uaf-1.t2.ucsd.edu:50010/dis/serve"
+BASEURL = "http://localhost:8891/dis/serve"
 
 def query(q, typ="basic", detail=False, timeout=999):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}

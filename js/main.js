@@ -1,6 +1,7 @@
 var timer;
 var debugMode = false;
-var BASEURL = "http://uaf-7.t2.ucsd.edu:50010";
+//var BASEURL = "http://uaf-1.t2.ucsd.edu:8891";
+var BASEURL = "http://localhost:8891";
 
 function isDict(v) {
     return (typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date));

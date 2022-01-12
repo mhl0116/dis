@@ -107,6 +107,6 @@ def deleteproxy():
     return jsonify(dict(status="success"))
 
 if __name__ == '__main__':
-    # app.run(host="localhost", port=8887, threaded=True, debug=True)
-    app.run(host="0.0.0.0", port=50010, threaded=True, debug=True)
+    app.run(host="localhost", port=8891, threaded=True, debug=True)
+    #app.run(host="0.0.0.0", port=50010, threaded=True, debug=True)
 

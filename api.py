@@ -42,9 +42,9 @@ class Fetcher(object):
             try:
                 self.cookies.load(self.cookie_file, ignore_discard=True, ignore_expires=True)
             except IOError:
-                print "Cookie file {} doesn't exist. It will be generated".format(self.cookie_file)
+                print ("Cookie file {} doesn't exist. It will be generated".format(self.cookie_file) )
             except cookielib.LoadError:
-                print "Cookie file {} couldn't be read. It will be (re)generated".format(self.cookie_file)
+                print ("Cookie file {} couldn't be read. It will be (re)generated".format(self.cookie_file) ) 
             domain = url.split("://",1)[1].split("/",1)[0]
             is_cookie_valid = (len(self.cookies) > 0)
             earliest_expiration = datetime.datetime.now() + datetime.timedelta(hours=999)
@@ -75,7 +75,7 @@ class Fetcher(object):
                 url = url,
                 extra = AUTH_PATHS["extra_args_sso"],
                 )
-        print "Making cookie with cern-get-sso-cookie: {}".format(cmd)
+        print ("Making cookie with cern-get-sso-cookie: {}".format(cmd) )
         os.system(cmd)
 
         # actually, we would want to load the file first, find the relevant cookie, and get the proper
@@ -521,7 +521,7 @@ if __name__ == "__main__":
 
 
     f = Fetcher()
-    print f.cookies
+    print (f.cookies)
     # api = XSDBApi(fetcher=f)
     # out = api.get_samples("/TTJets*/*94X*/MINIAODSIM")
     # print
@@ -529,14 +529,14 @@ if __name__ == "__main__":
     # print(float(out["payload"][0]["cross_section"]),50.)
     # api = PMPApi(fetcher=f)
     api = MCMApi(fetcher=f)
-    print f.cookies
+    print (f.cookies)
     # out = api.get_from_x("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM",which="dataset",slim_json=False)
     # print f.cookies
     # # print(len(out["payload"]["requests"]),10)
     # print(out["payload"]["member_of_chain"][-1])
     # out = api.get_from_x("TOP-chain_RunIIFall18wmLHEGS_flowRunIIAutumn18DRPremix_flowRunIIAutumn18MiniAOD_flowRunIIAutumn18NanoAODv4-00057",which="chain")
     out = api.get_driver_chain_from_dataset("/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2/MINIAODSIM")
-    print f.cookies
+    print (f.cookies)
     # print(len(out["payload"]["requests"]),10)
     print(out["payload"])
 
